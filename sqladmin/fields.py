@@ -431,3 +431,11 @@ class UuidField(fields.StringField):
                 self.data = None
         else:
             self.data = None
+
+
+class BooleanField(fields.BooleanField):
+    """
+    Boolean checkbox field.
+    """
+
+    widget = sqladmin_widgets.BooleanInputWidget()
