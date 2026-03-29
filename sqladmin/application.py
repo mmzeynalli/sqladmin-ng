@@ -706,8 +706,9 @@ class Admin(BaseAdminView):
         data = [loader.format(m) for m in await loader.get_list(term)]
         return JSONResponse({"results": data})
 
+    @staticmethod
     def get_save_redirect_url(
-        self, request: Request, form: FormData, model_view: ModelView, obj: Any
+        request: Request, form: FormData, model_view: ModelView, obj: Any
     ) -> str | URL:
         """
         Get the redirect URL after a save action
@@ -727,7 +728,8 @@ class Admin(BaseAdminView):
 
         return request.url_for("admin:create", identity=identity)
 
-    async def _handle_form_data(self, request: Request, obj: Any = None) -> FormData:
+    @staticmethod
+    async def _handle_form_data(request: Request, obj: Any = None) -> FormData:
         """
         Handle form data and modify in case of UploadFile.
         This is needed since in edit page
@@ -753,14 +755,16 @@ class Admin(BaseAdminView):
                 form_data.append((key, value))
         return FormData(form_data)
 
-    def _normalize_wtform_data(self, obj: Any) -> dict:
+    @staticmethod
+    def _normalize_wtform_data(obj: Any) -> dict:
         form_data = {}
         for field_name in WTFORMS_ATTRS:
             if value := getattr(obj, field_name, None):
                 form_data[field_name + "_"] = value
         return form_data
 
-    def _denormalize_wtform_data(self, form_data: dict, obj: Any) -> dict:
+    @staticmethod
+    def _denormalize_wtform_data(form_data: dict, obj: Any) -> dict:
         data = form_data.copy()
         for field_name in WTFORMS_ATTRS_REVERSED:
             reserved_field_name = field_name[:-1]
