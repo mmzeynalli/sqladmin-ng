@@ -61,7 +61,7 @@ class ReviewComplaint(Base):
 
     id = Column(Integer, primary_key=True)
     # FKs intentionally in oposite order of the corresponding PKs since
-    # SQLAdmin should not assume they always match in order.
+    # SQLAdmin-NG should not assume they always match in order.
     review_movie_id = Column(Integer, nullable=False)
     review_user_id = Column(Integer, nullable=False)
     complaint = Column(String, nullable=False)

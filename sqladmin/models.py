@@ -125,7 +125,7 @@ class ModelViewMeta(type):
 class BaseModelView:
     def is_visible(self, request: Request) -> bool:
         """Override this method if you want dynamically
-        hide or show administrative views from SQLAdmin menu structure
+        hide or show administrative views from SQLAdmin-NG menu structure
         By default, item is visible in menu.
         Both is_visible and is_accessible to be displayed in menu.
         """
@@ -133,7 +133,7 @@ class BaseModelView:
 
     def is_accessible(self, request: Request) -> bool:
         """Override this method to add permission checks.
-        SQLAdmin does not make any assumptions about the authentication system
+        SQLAdmin-NG does not make any assumptions about the authentication system
         used in your application, so it is up to you to implement it.
         By default, it will allow access for everyone.
         """

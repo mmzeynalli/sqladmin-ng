@@ -59,7 +59,7 @@ body:
       label: Environment
       description: Describe your environment.
       placeholder: |
-        - OS / Python / SQLAdmin version.
+        - OS / Python / SQLAdmin-NG version.
     validations:
       required: true
   - type: textarea

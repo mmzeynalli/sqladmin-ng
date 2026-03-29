@@ -67,7 +67,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(32), default="SQLAdmin")
+    name = Column(String(32), default="SQLAdmin-NG")
     email = Column(String, nullable=False)
     bio = Column(Text)
     active = Column(Boolean, nullable=True)

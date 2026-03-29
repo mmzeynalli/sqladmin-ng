@@ -14,7 +14,7 @@ from sqladmin.authentication import AuthenticationBackend
 from sqladmin.models import ModelView
 from tests.common import sync_engine as engine
 
-Base = declarative_base()  # type: Any
+Base = declarative_base()
 session_maker = sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 
@@ -86,7 +86,7 @@ def test_login_failure(client: TestClient) -> None:
 def test_login(client: TestClient) -> None:
     response = client.post("/admin/login", data={"username": "a", "password": "b"})
 
-    assert len(response.cookies) == 1
+    assert len(client.cookies) == 1
     assert response.status_code == 200
 
 
@@ -102,8 +102,7 @@ def test_expose_access_login_required_views(client: TestClient) -> None:
     response = client.get("/admin/custom")
     assert response.url == "http://testserver/admin/login"
 
-    response = client.post("/admin/login", data={"username": "a", "password": "b"})
-    client.cookies = response.cookies
+    client.post("/admin/login", data={"username": "a", "password": "b"})
 
     response = client.get("/admin/custom")
     assert {"status": "ok"} == response.json()
@@ -113,8 +112,7 @@ def test_action_access_login_required_views(client: TestClient) -> None:
     response = client.get("/admin/movie/action/test")
     assert response.url == "http://testserver/admin/login"
 
-    response = client.post("/admin/login", data={"username": "a", "password": "b"})
-    client.cookies = response.cookies
+    client.post("/admin/login", data={"username": "a", "password": "b"})
 
     response = client.get("/admin/movie/action/test")
     assert {"status": "ok"} == response.json()

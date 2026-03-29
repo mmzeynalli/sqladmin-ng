@@ -1,9 +1,9 @@
-SQLadmin does not enforce any authentication to your application,
+SQLAdmin-NG does not enforce any authentication to your application,
 but provides an optional `AuthenticationBackend` you can use.
 
 ## AuthenticationBackend
 
-SQLAdmin has a session-based authentication that will allow you
+SQLAdmin-NG has a session-based authentication that will allow you
 to integrate any existing authentication to it.
 
 The class `AuthenticationBackend` has three methods you need to override:
@@ -118,7 +118,7 @@ admin = Admin(app=..., authentication_backend=authentication_backend، ...)
 
 ## Using OAuth
 
-You can also integrate OAuth into SQLAdmin, for this example we will integrate Google OAuth using `Authlib`.
+You can also integrate OAuth into SQLAdmin-NG, for this example we will integrate Google OAuth using `Authlib`.
 If you have followed the previous example, there are only two changes required to the authentication flow:
 
 ```python
@@ -182,7 +182,7 @@ admin.app.router.add_route("/auth/google", login_google)
 
 ## Permissions
 
-The `ModelView` and `BaseView` classes in SQLAdmin implements two special methods you can override.
+The `ModelView` and `BaseView` classes in SQLAdmin-NG implements two special methods you can override.
 You can use these methods to have control over each Model/View in addition to the AuthenticationBackend.
 So this is more like checking if the user has access to the specific Model or View.
 

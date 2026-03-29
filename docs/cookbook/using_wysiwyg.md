@@ -1,5 +1,5 @@
 You can customize the templates and add custom javascript code to enable CKEditor to your fields.
-In order to use `CKEditor` you need to inject some JS code into the SQLAdmin and that works by customizing the templates.
+In order to use `CKEditor` you need to inject some JS code into the SQLAdmin-NG and that works by customizing the templates.
 
 Let's say you have the following model:
 
@@ -11,6 +11,7 @@ class Post(Base):
 
 - First create a `templates/sqladmin` directory in your project.
 - Then add a file `custom_edit.html` there with the following content:
+
 ```html title="custom_edit.html"
 {% extends "sqladmin/edit.html" %}
 {% block tail %}

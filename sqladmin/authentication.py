@@ -10,7 +10,7 @@ from starlette.responses import RedirectResponse, Response
 
 
 class AuthenticationBackend:
-    """Base class for implementing the Authentication into SQLAdmin.
+    """Base class for implementing the Authentication into SQLAdmin-NG.
     You need to inherit this class and override the methods:
     `login`, `logout` and `authenticate`.
     """

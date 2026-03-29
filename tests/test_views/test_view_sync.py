@@ -532,7 +532,7 @@ def test_create_endpoint_post_form(client: TestClient) -> None:
     assert profile.user_id == user.id
 
     data = {
-        "name": "SQLAdmin",
+        "name": "SQLAdmin-NG",
         "addresses": [address.id],
         "profile": profile.id,
     }
@@ -551,7 +551,7 @@ def test_create_endpoint_post_form(client: TestClient) -> None:
     )
     with session_maker() as s:
         user = s.execute(stmt).scalar_one()
-    assert user.name == "SQLAdmin"
+    assert user.name == "SQLAdmin-NG"
     assert user.addresses[0].id == address.id
     assert user.profile.id == profile.id
 

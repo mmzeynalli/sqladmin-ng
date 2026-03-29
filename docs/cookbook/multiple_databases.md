@@ -31,6 +31,6 @@ and now you can use the `sessionmaker` factory.
 
 !!! tip
     In addition to being useful for partitioning, you could use the `sessionmaker` factory
-    instead of the `engine` if you have one database for your application, SQLAdmin internally
+    instead of the `engine` if you have one database for your application, SQLAdmin-NG internally
     creates a `sessionmaker` for your `engine` but if you pass the `sessionmaker` you can keep
     any configuration you have on your sessions.

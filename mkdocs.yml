@@ -1,6 +1,6 @@
 site_name: SQLAlchemy Admin
 site_description: Flexible admin dashboard for SQLAlchemy.
-site_url: https://aminalaee.github.io/sqladmin/
+site_url: https://mmzeynalli.dev/sqladmin-ng/
 
 theme:
   name: "material"
@@ -9,8 +9,8 @@ theme:
   features:
     - content.code.copy
 
-repo_name: aminalaee/sqladmin
-repo_url: https://github.com/aminalaee/sqladmin
+repo_name: mmzeynalli/sqladmin-ng
+repo_url: https://github.com/mmzeynalli/sqladmin-ng
 edit_uri: ""
 
 nav:
@@ -61,13 +61,11 @@ plugins:
             show_source: false
 
 extra:
-  analytics:
-    provider: google
-    property: G-MV427T1Z9X
+  # analytics:
+  #   provider: google
+  #   property: G-MV427T1Z9X
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/aminalaee
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/aminalaee
+      link: https://github.com/mmzeynalli
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/amin-alaee

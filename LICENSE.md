@@ -1,4 +1,5 @@
 Copyright © 2022, Amin Alaee.
+Copyright © 2026, Miradil Zeynalli.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

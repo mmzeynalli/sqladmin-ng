@@ -555,7 +555,7 @@ async def test_create_endpoint_post_form(client: AsyncClient) -> None:
     assert profile.user.id == user.id
 
     data = {
-        "name": "SQLAdmin",
+        "name": "SQLAdmin-NG",
         "addresses": [address.id],
         "profile": profile.id,
     }
@@ -576,7 +576,7 @@ async def test_create_endpoint_post_form(client: AsyncClient) -> None:
     async with session_maker() as s:
         result = await s.execute(stmt)
     user = result.scalar_one()
-    assert user.name == "SQLAdmin"
+    assert user.name == "SQLAdmin-NG"
     assert user.addresses[0].id == address.id
     assert user.profile.id == profile.id
 

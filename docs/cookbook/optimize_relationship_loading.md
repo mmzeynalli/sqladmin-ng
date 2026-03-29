@@ -1,6 +1,6 @@
 When dealing with any kind of relationship in your models,
 be it One-To-Many, Many-To-One or Many-To-Many,
-`SQLAdmin` will load related models in your edit page.
+`SQLAdmin-NG` will load related models in your edit page.
 
 For example if we have the following model definition:
 

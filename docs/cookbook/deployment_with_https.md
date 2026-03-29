@@ -1,4 +1,4 @@
-It is common and useful to deploy your `SQLAdmin` or FastAPI/Starlette application
+It is common and useful to deploy your `SQLAdmin-NG` or FastAPI/Starlette application
 behind a reverse proxy like Nginx and enable `HTTPS` on the reverse proxy.
 
 Running the app locally you would not face any issues but with HTTPS enabled
@@ -9,7 +9,7 @@ Mixed Content: The page at '<URL>' was loaded over HTTPS, but requested an insec
 ```
 
 This means the CSS and Javascript files for the Admin were not loaded properly.
-This is not exactly related to the `SQLAdmin` but more related to how
+This is not exactly related to the `SQLAdmin-NG` but more related to how
 you are deploying your project.
 
 For example if you are using `Uvicorn` as your ASGI server you can add the following options

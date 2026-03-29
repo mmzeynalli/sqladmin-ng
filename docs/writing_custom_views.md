@@ -1,8 +1,8 @@
 ### Basic example
 
-You might need to add custom views to the existing SQLAdmin views, for example to create dashboards, show custom info or add new forms.
+You might need to add custom views to the existing SQLAdmin-NG views, for example to create dashboards, show custom info or add new forms.
 
-To add custom views to the Admin interface, you can use the `BaseView` included in SQLAdmin. Here's an example to add custom views:
+To add custom views to the Admin interface, you can use the `BaseView` included in SQLAdmin-NG. Here's an example to add custom views:
 
 !!! example
 
@@ -54,7 +54,7 @@ The `path` is in this case prepended with the view's identity, in this case `/ad
 
 ### Database access
 
-The example above was very basic and you probably want to access database and SQLAlchemy models in your custom view. You can use `sessionmaker` the same way SQLAdmin is using it to do so:
+The example above was very basic and you probably want to access database and SQLAlchemy models in your custom view. You can use `sessionmaker` the same way SQLAdmin-NG is using it to do so:
 
 !!! example
 

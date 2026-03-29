@@ -9,7 +9,7 @@ As the first step you should create a `templates/sqladmin` directory in you proj
 
 Since `Jinja2` is modular, you can override your specific template file and do your changes.
 For example you can create a `custom_details.html` file which overrides the `details.html` from
-SQLAdmin and in the `content` block it adds custom HTML tags:
+SQLAdmin-NG and in the `content` block it adds custom HTML tags:
 
 !!! example
 
@@ -28,7 +28,7 @@ SQLAdmin and in the `content` block it adds custom HTML tags:
 
 ## Overriding default templates
 
-If you need to change one of the existing default templates in SQLAdmin such that it affects multiple pages, you can do so by copying the existing template from `templates/sqladmin` into your `templates/sqladmin` directory. It will then be used instead of the one in the package. For example if there is some Javascript you want to run on every page you may want to do it in layout.html like so:
+If you need to change one of the existing default templates in SQLAdmin-NG such that it affects multiple pages, you can do so by copying the existing template from `templates/sqladmin` into your `templates/sqladmin` directory. It will then be used instead of the one in the package. For example if there is some Javascript you want to run on every page you may want to do it in layout.html like so:
 
 !!! example
 

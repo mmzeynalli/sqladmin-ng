@@ -1,14 +1,14 @@
 # Working with Files and Images
 
 You can use [fastapi-storages](https://github.com/aminalaee/fastapi-storages) package
-to make file management easy in `SQLAdmin`.
+to make file management easy in `SQLAdmin-NG`.
 
 Right now `fastapi-storages` provides two storage backends:
 
 - `FileSystemStorage` for storing files in local file system.
 - `S3Storage` for storing files in Amazon S3 or S3-compatible storages.
 
-It also includes custom SQLAlchemy types to make it easier to integrate into `SQLAdmin`:
+It also includes custom SQLAlchemy types to make it easier to integrate into `SQLAdmin-NG`:
 
 - `FileType`
 - `ImageType`
