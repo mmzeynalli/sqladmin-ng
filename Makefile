@@ -50,9 +50,6 @@ docs-build:
 docs-serve:
 	uv run mkdocs serve --dev-addr localhost:8080
 
-docs-deploy:
-	uv run mkdocs gh-deploy --force
-
 build:
 	uv build
 
