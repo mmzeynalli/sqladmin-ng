@@ -20,8 +20,9 @@
 <a href="https://pypi.org/project/sqladmin-ng" target="_blank">
     <img src="https://img.shields.io/pypi/pyversions/sqladmin-ng.svg?color=%2334D058" alt="Supported Python versions">
 </a>
-[![Netlify Status](https://api.netlify.com/api/v1/badges/db255e51-81e5-4ae4-9123-701c8fd3e846/deploy-status)](https://app.netlify.com/projects/sqladmin-ng/deploys)
 </p>
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/db255e51-81e5-4ae4-9123-701c8fd3e846/deploy-status)](https://app.netlify.com/projects/sqladmin-ng/deploys)
 
 ---
 

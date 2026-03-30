@@ -30,6 +30,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Save values types as is if possible while JSON export
  by @DenisDudnik in [PR #865](https://github.com/aminalaee/sqladmin/pull/865)
 
+### New Contributors
+
+- @caarmen made their first contribution in [PR #1010](https://github.com/aminalaee/sqladmin/pull/1010)
+- @DenisDudnik made their first contribution in [PR #1003](https://github.com/aminalaee/sqladmin/pull/1003)
+- @Airumian made their first contribution in [PR #969](https://github.com/aminalaee/sqladmin/pull/969)
+- @fd-oncodna made their first contribution in [PR #970](https://github.com/aminalaee/sqladmin/pull/970)
+
 - **Full Changelog**: [0.24.0...0.25.0](https://github.com/mmzeynalli/sqladmin/compare/0.24.0...0.25.0)
 
 ## Version 0.24.0 - 2026-03-29

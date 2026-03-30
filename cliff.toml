@@ -2,9 +2,7 @@
 # https://git-cliff.org/docs/configuration
 #
 # Configured to match the existing CHANGELOG.md style (Keep a Changelog).
-# Works fully offline — no GitHub token needed.
-# PR numbers are extracted from commit messages (e.g. "(#42)") via postprocessors.
-# Author names come from local git history.
+# Requires GITHUB_TOKEN env var for GitHub usernames, PR links, and new contributors.
 
 [changelog]
 header = """
@@ -28,21 +26,31 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | striptags | trim | upper_first }}
     {% for commit in commits %}
-        - {{ commit.message | split(pat="\n") | first | upper_first }} by @{{ commit.author.name }}\
+        - {{ commit.message | split(pat="\n") | first | upper_first }}\
+            {% if commit.remote.username %} by @{{ commit.remote.username }}{% endif %}\
+            {% if commit.remote.pr_number %} in [PR #{{ commit.remote.pr_number }}](https://github.com/mmzeynalli/sqladmin-ng/pull/{{ commit.remote.pr_number }}){% endif %}\
     {% endfor %}
 {% endfor -%}
+{% if github.contributors | filter(attribute="is_first_time", value=true) | length > 0 %}
+    ### New Contributors
+    {% for contributor in github.contributors | filter(attribute="is_first_time", value=true) %}
+        - @{{ contributor.username }} made their first contribution\
+            {% if contributor.pr_number %} in [PR #{{ contributor.pr_number }}](https://github.com/mmzeynalli/sqladmin-ng/pull/{{ contributor.pr_number }}){% endif %}\
+    {% endfor %}
+{% endif -%}
 {% if version %}
-    - **Full Changelog**: [{{ previous.version | default(value="0.0.0") }}...{{ version }}](https://github.com/mmzeynalli/sqladmin/compare/{{ previous.version | default(value="0.0.0") }}...{{ version }})
+    - **Full Changelog**: [{{ previous.version | default(value="0.0.0") }}...{{ version }}](https://github.com/mmzeynalli/sqladmin-ng/compare/{{ previous.version | default(value="0.0.0") }}...{{ version }})
 {% endif -%}
 """
 
 trim = true
 render_always = true
 
-# Convert PR references "(#N)" in rendered output into markdown links
-postprocessors = [
-    { pattern = '\\(#(\\d+)\\)', replace = "([#${1}](https://github.com/mmzeynalli/sqladmin/pull/${1}))" },
-]
+postprocessors = []
+
+[remote.github]
+owner = "mmzeynalli"
+repo = "sqladmin-ng"
 
 [git]
 conventional_commits = true
@@ -55,7 +63,6 @@ commit_preprocessors = []
 protect_breaking_commits = false
 
 # Only include merge commits; everything else is skipped.
-# Author names will be edited manually before release.
 commit_parsers = [
     { message = "^Merge", group = "<!-- 0 -->Changes" },
     { message = ".*", skip = true },
@@ -65,7 +72,7 @@ filter_commits = false
 fail_on_unmatched_commit = false
 
 link_parsers = [
-    { pattern = "#(\\d+)", href = "https://github.com/mmzeynalli/sqladmin/pull/$1" },
+    { pattern = "#(\\d+)", href = "https://github.com/mmzeynalli/sqladmin-ng/pull/$1" },
 ]
 
 use_branch_tags = false
