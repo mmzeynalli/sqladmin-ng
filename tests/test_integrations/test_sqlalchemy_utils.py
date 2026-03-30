@@ -28,17 +28,17 @@ session_maker = sessionmaker(bind=engine, class_=AsyncSession)
 
 
 class RoleEnum(enum.Enum):
-    admin = "admin"
-    user = "user"
+    admin = 'admin'
+    user = 'user'
 
 
-ROLE_CHOICES = [("admin", "admin"), ("user", "user")]
+ROLE_CHOICES = [('admin', 'admin'), ('user', 'user')]
 
 
-@pytest.mark.parametrize("choices", [RoleEnum, ROLE_CHOICES])
+@pytest.mark.parametrize('choices', [RoleEnum, ROLE_CHOICES])
 async def test_model_form_sqlalchemy_utils(choices) -> None:
     class SQLAlchemyUtilsModel(Base):
-        __tablename__ = f"sqlalchemy_utils_model_{choices}"
+        __tablename__ = f'sqlalchemy_utils_model_{choices}'
 
         id = Column(Integer, primary_key=True)
         arrow = Column(ArrowType)
@@ -54,23 +54,23 @@ async def test_model_form_sqlalchemy_utils(choices) -> None:
 
     Form = await get_model_form(model=SQLAlchemyUtilsModel, session_maker=session_maker)
     data = DummyData(
-        currency="IR",
-        timezone=["Iran/Tehran"],
-        color="bbb",
-        phone="abc",
-        arrow="wrong",
+        currency='IR',
+        timezone=['Iran/Tehran'],
+        color='bbb',
+        phone='abc',
+        arrow='wrong',
         role=None,
     )
     form = Form(data)
     assert form.validate() is False
 
     data = DummyData(
-        currency="IRR",
-        timezone="Asia/Tehran",
-        color="red",
-        phone="+9823456789",
-        arrow="2023-02-06 12:00:0",
-        role="admin",
+        currency='IRR',
+        timezone='Asia/Tehran',
+        color='red',
+        phone='+9823456789',
+        arrow='2023-02-06 12:00:0',
+        role='admin',
     )
     form = Form(data)
     assert form.validate() is True

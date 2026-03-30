@@ -22,80 +22,80 @@ from sqlalchemy.orm import RelationshipProperty, sessionmaker
 
 from sqladmin._types import MODEL_PROPERTY
 
-T = TypeVar("T")
+T = TypeVar('T')
 
 
-_filename_ascii_strip_re = re.compile(r"[^A-Za-z0-9_.-]")
+_filename_ascii_strip_re = re.compile(r'[^A-Za-z0-9_.-]')
 _windows_device_files = (
-    "CON",
-    "AUX",
-    "COM1",
-    "COM2",
-    "COM3",
-    "COM4",
-    "LPT1",
-    "LPT2",
-    "LPT3",
-    "PRN",
-    "NUL",
+    'CON',
+    'AUX',
+    'COM1',
+    'COM2',
+    'COM3',
+    'COM4',
+    'LPT1',
+    'LPT2',
+    'LPT3',
+    'PRN',
+    'NUL',
 )
 
 standard_duration_re = re.compile(
-    r"^"
-    r"(?:(?P<days>-?\d+) (days?, )?)?"
-    r"(?P<sign>-?)"
-    r"((?:(?P<hours>\d+):)(?=\d+:\d+))?"
-    r"(?:(?P<minutes>\d+):)?"
-    r"(?P<seconds>\d+)"
-    r"(?:[\.,](?P<microseconds>\d{1,6})\d{0,6})?"
-    r"$"
+    r'^'
+    r'(?:(?P<days>-?\d+) (days?, )?)?'
+    r'(?P<sign>-?)'
+    r'((?:(?P<hours>\d+):)(?=\d+:\d+))?'
+    r'(?:(?P<minutes>\d+):)?'
+    r'(?P<seconds>\d+)'
+    r'(?:[\.,](?P<microseconds>\d{1,6})\d{0,6})?'
+    r'$'
 )
 
 # Support the sections of ISO 8601 date representation that are accepted by timedelta
 iso8601_duration_re = re.compile(
-    r"^(?P<sign>[-+]?)"
-    r"P"
-    r"(?:(?P<days>\d+([\.,]\d+)?)D)?"
-    r"(?:T"
-    r"(?:(?P<hours>\d+([\.,]\d+)?)H)?"
-    r"(?:(?P<minutes>\d+([\.,]\d+)?)M)?"
-    r"(?:(?P<seconds>\d+([\.,]\d+)?)S)?"
-    r")?"
-    r"$"
+    r'^(?P<sign>[-+]?)'
+    r'P'
+    r'(?:(?P<days>\d+([\.,]\d+)?)D)?'
+    r'(?:T'
+    r'(?:(?P<hours>\d+([\.,]\d+)?)H)?'
+    r'(?:(?P<minutes>\d+([\.,]\d+)?)M)?'
+    r'(?:(?P<seconds>\d+([\.,]\d+)?)S)?'
+    r')?'
+    r'$'
 )
 
 # Support PostgreSQL's day-time interval format, e.g. "3 days 04:05:06". The
 # year-month and mixed intervals cannot be converted to a timedelta and thus
 # aren't accepted.
 postgres_interval_re = re.compile(
-    r"^"
-    r"(?:(?P<days>-?\d+) (days? ?))?"
-    r"(?:(?P<sign>[-+])?"
-    r"(?P<hours>\d+):"
-    r"(?P<minutes>\d\d):"
-    r"(?P<seconds>\d\d)"
-    r"(?:\.(?P<microseconds>\d{1,6}))?"
-    r")?$"
+    r'^'
+    r'(?:(?P<days>-?\d+) (days? ?))?'
+    r'(?:(?P<sign>[-+])?'
+    r'(?P<hours>\d+):'
+    r'(?P<minutes>\d\d):'
+    r'(?P<seconds>\d\d)'
+    r'(?:\.(?P<microseconds>\d{1,6}))?'
+    r')?$'
 )
 
 
 def prettify_class_name(name: str) -> str:
-    return re.sub(r"(?<=.)([A-Z])", r" \1", name)
+    return re.sub(r'(?<=.)([A-Z])', r' \1', name)
 
 
 def slugify_class_name(name: str) -> str:
-    dashed = re.sub("(.)([A-Z][a-z]+)", r"\1-\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1-\2", dashed).lower()
+    dashed = re.sub('(.)([A-Z][a-z]+)', r'\1-\2', name)
+    return re.sub('([a-z0-9])([A-Z])', r'\1-\2', dashed).lower()
 
 
 def slugify_action_name(name: str) -> str:
-    if not re.search(r"^[A-Za-z0-9 \-_]+$", name):
+    if not re.search(r'^[A-Za-z0-9 \-_]+$', name):
         raise ValueError(
-            "name must be non-empty and contain only allowed characters"
-            " - use `label` for more expressive names"
+            'name must be non-empty and contain only allowed characters'
+            ' - use `label` for more expressive names'
         )
 
-    return re.sub(r"[_ ]", "-", name).lower()
+    return re.sub(r'[_ ]', '-', name).lower()
 
 
 def secure_filename(filename: str) -> str:
@@ -108,29 +108,29 @@ def secure_filename(filename: str) -> str:
     On windows systems the function also makes sure that the file is not
     named after one of the special device files.
     """
-    filename = unicodedata.normalize("NFKD", filename)
-    filename = filename.encode("ascii", "ignore").decode("ascii")
+    filename = unicodedata.normalize('NFKD', filename)
+    filename = filename.encode('ascii', 'ignore').decode('ascii')
 
     for sep in os.path.sep, os.path.altsep:
         if sep:
-            filename = filename.replace(sep, " ")
-    filename = str(_filename_ascii_strip_re.sub("", "_".join(filename.split()))).strip(
-        "._"
+            filename = filename.replace(sep, ' ')
+    filename = str(_filename_ascii_strip_re.sub('', '_'.join(filename.split()))).strip(
+        '._'
     )
 
     # on nt a couple of special files are present in each folder.  We
     # have to ensure that the target file is not such a filename.  In
     # this case we prepend an underline
     if (
-        os.name == "nt"
+        os.name == 'nt'
         and filename
         and filename.split(
-            ".",
+            '.',
             maxsplit=1,
         )[0].upper()
         in _windows_device_files
     ):
-        filename = f"_{filename}"  # pragma: no cover
+        filename = f'_{filename}'  # pragma: no cover
 
     return filename
 
@@ -157,7 +157,7 @@ class _PseudoBuffer:
     interface.
     """
 
-    encoding = "utf-8"
+    encoding = 'utf-8'
 
     def write(self, value: T) -> bytes:
         return str(value).encode(self.encoding)
@@ -193,7 +193,7 @@ def get_object_identifier(obj: Any) -> Any:
         return values[0]
 
     # Combine into single string for multiple primary key support
-    return ";".join(str(v).replace("\\", "\\\\").replace(";", r"\;") for v in values)
+    return ';'.join(str(v).replace('\\', '\\\\').replace(';', r'\;') for v in values)
 
 
 def _object_identifier_parts(id_string: str, model: type) -> tuple[str, ...]:
@@ -210,20 +210,20 @@ def _object_identifier_parts(id_string: str, model: type) -> tuple[str, ...]:
             escape_next = False
             continue
 
-        if char == ";":
+        if char == ';':
             values.append(id_string[value_start:idx])
             value_start = idx + 1
 
-        escape_next = char == "\\"
+        escape_next = char == '\\'
 
     # Add the last part that's not followed by semicolon
     values.append(id_string[value_start:])
 
     if len(values) != len(pks):
-        raise ValueError(f"Malformed identifier string for model {model.__name__}.")
+        raise ValueError(f'Malformed identifier string for model {model.__name__}.')
 
     # Undo escaping for ; and \
-    return tuple(v.replace(r"\;", ";").replace(r"\\", "\\") for v in values)
+    return tuple(v.replace(r'\;', ';').replace(r'\\', '\\') for v in values)
 
 
 def object_identifier_values(id_string: str, model: Any) -> tuple:
@@ -235,7 +235,7 @@ def object_identifier_values(id_string: str, model: Any) -> tuple:
         if issubclass(type_, (date, datetime, time)):
             value = type_.fromisoformat(part)
         elif issubclass(type_, bool):
-            value = False if part == "False" else type_(part)
+            value = False if part == 'False' else type_(part)
         else:
             value = type_(part)  # type: ignore [call-arg]
         values.append(value)
@@ -244,11 +244,11 @@ def object_identifier_values(id_string: str, model: Any) -> tuple:
 
 def get_direction(prop: MODEL_PROPERTY) -> str:
     if not isinstance(prop, RelationshipProperty):
-        raise TypeError("Expected RelationshipProperty, got %s" % type(prop))
+        raise TypeError('Expected RelationshipProperty, got %s' % type(prop))
 
     name = prop.direction.name
-    if name == "ONETOMANY" and not prop.uselist:
-        return "ONETOONE"
+    if name == 'ONETOMANY' and not prop.uselist:
+        return 'ONETOONE'
     return name
 
 
@@ -256,7 +256,7 @@ def get_column_python_type(column: Column) -> type:
     try:
         return column.type.python_type
     except NotImplementedError:
-        if hasattr(column.type, "impl"):
+        if hasattr(column.type, 'impl'):
             try:
                 return column.type.impl.python_type
             except NotImplementedError:
@@ -279,11 +279,11 @@ def parse_interval(value: str) -> timedelta | None:
         return None
 
     kw: dict[str, Any] = match.groupdict()
-    sign = -1 if kw.pop("sign", "+") == "-" else 1
-    if kw.get("microseconds"):
-        kw["microseconds"] = kw["microseconds"].ljust(6, "0")
-    kw = {k: float(v.replace(",", ".")) for k, v in kw.items() if v is not None}
-    days = timedelta(kw.pop("days", 0.0) or 0.0)
+    sign = -1 if kw.pop('sign', '+') == '-' else 1
+    if kw.get('microseconds'):
+        kw['microseconds'] = kw['microseconds'].ljust(6, '0')
+    kw = {k: float(v.replace(',', '.')) for k, v in kw.items() if v is not None}
+    days = timedelta(kw.pop('days', 0.0) or 0.0)
     if match.re == iso8601_duration_re:
         days *= sign
     return days + sign * timedelta(**kw)
@@ -304,9 +304,9 @@ def choice_type_coerce_factory(type_: Any) -> Callable[[Any], Any]:
 
     choices = type_.choices
     if isinstance(choices, type) and issubclass(choices, enum.Enum):
-        key, choice_cls = "value", choices
+        key, choice_cls = 'value', choices
     else:
-        key, choice_cls = "code", Choice
+        key, choice_cls = 'code', Choice
 
     def choice_coerce(value: Any) -> Any:
         if value is None:
@@ -326,7 +326,7 @@ def is_async_session_maker(session_maker: sessionmaker) -> bool:
 
 
 def default_encoder(obj: Any) -> Any:
-    if hasattr(obj, "isoformat"):  # datetime-like
+    if hasattr(obj, 'isoformat'):  # datetime-like
         return obj.isoformat()
     from decimal import Decimal
 

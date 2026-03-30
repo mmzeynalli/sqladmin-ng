@@ -13,7 +13,7 @@ class CurrencyValidator:
             Currency(field.data)
         except (TypeError, ValueError) as exc:
             raise ValidationError(
-                "Not a valid ISO currency code (e.g. USD, EUR, CNY)."
+                'Not a valid ISO currency code (e.g. USD, EUR, CNY).'
             ) from exc
 
 
@@ -26,7 +26,7 @@ class PhoneNumberValidator:
         try:
             PhoneNumber(field.data)
         except PhoneNumberParseException as exc:
-            raise ValidationError("Not a valid phone number.") from exc
+            raise ValidationError('Not a valid phone number.') from exc
 
 
 class ColorValidator:

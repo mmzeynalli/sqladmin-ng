@@ -36,7 +36,7 @@ class Pagination:
             if page_control.number == self.page - 1:
                 return page_control
 
-        raise RuntimeError("Previous page not found.")
+        raise RuntimeError('Previous page not found.')
 
     @property
     def next_page(self) -> PageControl:
@@ -44,7 +44,7 @@ class Pagination:
             if page_control.number == self.page + 1:
                 return page_control
 
-        raise RuntimeError("Next page not found.")
+        raise RuntimeError('Next page not found.')
 
     def __post_init__(self) -> None:
         # Clamp page

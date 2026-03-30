@@ -70,9 +70,9 @@ if TYPE_CHECKING:
     from sqladmin.application import BaseAdmin
 
 __all__ = [
-    "BaseView",
-    "ModelView",
-    "ModelView",
+    'BaseView',
+    'ModelView',
+    'ModelView',
 ]
 
 
@@ -85,9 +85,9 @@ class ModelViewMeta(type):
 
     @no_type_check
     def __new__(mcs, name, bases, attrs: dict, **kwargs: Any):
-        cls: Type["ModelView"] = super().__new__(mcs, name, bases, attrs)
+        cls: Type['ModelView'] = super().__new__(mcs, name, bases, attrs)
 
-        model = kwargs.get("model")
+        model = kwargs.get('model')
 
         if not model:
             return cls
@@ -96,23 +96,23 @@ class ModelViewMeta(type):
             inspect(model)
         except NoInspectionAvailable as exc:
             raise InvalidModelError(
-                f"Class {model.__name__} is not a SQLAlchemy model."
+                f'Class {model.__name__} is not a SQLAlchemy model.'
             ) from exc
 
         cls.pk_columns = get_primary_keys(model)
         cls.identity = slugify_class_name(model.__name__)
         cls.model = model
 
-        cls.name = attrs.get("name", prettify_class_name(cls.model.__name__))
-        cls.name_plural = attrs.get("name_plural", f"{cls.name}s")
+        cls.name = attrs.get('name', prettify_class_name(cls.model.__name__))
+        cls.name_plural = attrs.get('name_plural', f'{cls.name}s')
 
-        mcs._check_conflicting_options(["column_list", "column_exclude_list"], attrs)
-        mcs._check_conflicting_options(["form_columns", "form_excluded_columns"], attrs)
+        mcs._check_conflicting_options(['column_list', 'column_exclude_list'], attrs)
+        mcs._check_conflicting_options(['form_columns', 'form_excluded_columns'], attrs)
         mcs._check_conflicting_options(
-            ["column_details_list", "column_details_exclude_list"], attrs
+            ['column_details_list', 'column_details_exclude_list'], attrs
         )
         mcs._check_conflicting_options(
-            ["column_export_list", "column_export_exclude_list"], attrs
+            ['column_export_list', 'column_export_exclude_list'], attrs
         )
 
         return cls
@@ -120,7 +120,7 @@ class ModelViewMeta(type):
     @classmethod
     def _check_conflicting_options(mcs, keys: List[str], attrs: dict) -> None:
         if all(k in attrs for k in keys):
-            raise AssertionError(f"Cannot use {' and '.join(keys)} together.")
+            raise AssertionError(f'Cannot use {" and ".join(keys)} together.')
 
 
 class BaseModelView:
@@ -163,15 +163,15 @@ class BaseView(BaseModelView):
     # Internals
     is_model: ClassVar[bool] = False
     templates: ClassVar[Jinja2Templates]
-    _admin_ref: ClassVar["BaseAdmin"]
+    _admin_ref: ClassVar['BaseAdmin']
 
-    name: ClassVar[str] = ""
+    name: ClassVar[str] = ''
     """Name of the view to be displayed."""
 
-    identity: ClassVar[str] = ""
+    identity: ClassVar[str] = ''
     """Same as name but it will be used for URL of the endpoints."""
 
-    methods: ClassVar[List[str]] = ["GET"]
+    methods: ClassVar[List[str]] = ['GET']
     """List of method names for the endpoint.
     By default it's set to `["GET"]` only.
     """
@@ -181,15 +181,15 @@ class BaseView(BaseModelView):
     should be included in the schema.
     """
 
-    icon: ClassVar[str] = ""
+    icon: ClassVar[str] = ''
     """Display icon for ModelAdmin in the sidebar.
     Currently only supports FontAwesome and Tabler icons.
     """
 
-    category: ClassVar[str] = ""
+    category: ClassVar[str] = ''
     """Category name to group views together."""
 
-    category_icon: ClassVar[str] = ""
+    category_icon: ClassVar[str] = ''
     """Display icon for category in the sidebar."""
 
 
@@ -214,14 +214,14 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     session_maker: ClassVar[  # type: ignore[no-any-unimported]
         Union[
             sessionmaker,
-            "async_sessionmaker",
+            'async_sessionmaker',
         ]
     ]
     is_async: ClassVar[bool] = False
     is_model: ClassVar[bool] = True
-    ajax_lookup_url: ClassVar[str] = ""
+    ajax_lookup_url: ClassVar[str] = ''
 
-    name_plural: ClassVar[str] = ""
+    name_plural: ClassVar[str] = ''
     """Plural name of ModelView.
     Default value is Model class name + `s`.
     """
@@ -452,16 +452,16 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     """
 
     # Templates
-    list_template: ClassVar[str] = "sqladmin/list.html"
+    list_template: ClassVar[str] = 'sqladmin/list.html'
     """List view template. Default is `sqladmin/list.html`."""
 
-    create_template: ClassVar[str] = "sqladmin/create.html"
+    create_template: ClassVar[str] = 'sqladmin/create.html'
     """Create view template. Default is `sqladmin/create.html`."""
 
-    details_template: ClassVar[str] = "sqladmin/details.html"
+    details_template: ClassVar[str] = 'sqladmin/details.html'
     """Details view template. Default is `sqladmin/details.html`."""
 
-    edit_template: ClassVar[str] = "sqladmin/edit.html"
+    edit_template: ClassVar[str] = 'sqladmin/edit.html'
     """Edit view template. Default is `sqladmin/edit.html`."""
 
     # Template configuration
@@ -493,7 +493,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         ```
     """
 
-    export_types: ClassVar[List[str]] = ["csv", "json"]
+    export_types: ClassVar[List[str]] = ['csv', 'json']
     """A list of available export filetypes.
     Currently only `csv` is supported.
     """
@@ -795,20 +795,20 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
 
     def _url_for_delete(self, request: Request, obj: Any) -> str:
         pk = get_object_identifier(obj)
-        query_params = urlencode({"pks": pk})
+        query_params = urlencode({'pks': pk})
         url = request.url_for(
-            "admin:delete", identity=slugify_class_name(obj.__class__.__name__)
+            'admin:delete', identity=slugify_class_name(obj.__class__.__name__)
         )
-        return str(url) + "?" + query_params
+        return str(url) + '?' + query_params
 
     def _url_for_details_with_prop(self, request: Request, obj: Any, prop: str) -> URL:
         target = getattr(obj, prop, None)
         if target is None:
             return URL()
-        return self._build_url_for("admin:details", request, target)
+        return self._build_url_for('admin:details', request, target)
 
     def _url_for_action(self, request: Request, action_name: str) -> str:
-        return str(request.url_for(f"admin:action-{self.identity}-{action_name}"))
+        return str(request.url_for(f'admin:action-{self.identity}-{action_name}'))
 
     def _build_url_for(self, name: str, request: Request, obj: Any) -> URL:
         return request.url_for(
@@ -846,7 +846,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
             return int(number)
         except ValueError as exc:
             raise HTTPException(
-                status_code=400, detail="Invalid page or pageSize parameter"
+                status_code=400, detail='Invalid page or pageSize parameter'
             ) from exc
 
     async def count(self, request: Request, stmt: Optional[Select] = None) -> int:
@@ -856,10 +856,10 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         return rows[0]
 
     async def list(self, request: Request) -> Pagination:
-        page = self.validate_page_number(request.query_params.get("page"), 1)
-        page_size = self.validate_page_number(request.query_params.get("pageSize"), 0)
+        page = self.validate_page_number(request.query_params.get('page'), 1)
+        page_size = self.validate_page_number(request.query_params.get('pageSize'), 0)
         page_size = min(page_size or self.page_size, max(self.page_size_options))
-        search = request.query_params.get("search", None)
+        search = request.query_params.get('search', None)
 
         stmt = self.list_query(request)
         for relation in self._list_relations:
@@ -870,11 +870,11 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
             filter_value = request.query_params.get(filter_param_name)
 
             if filter_value:
-                if hasattr(filter_, "has_operator") and filter_.has_operator:
+                if hasattr(filter_, 'has_operator') and filter_.has_operator:
                     # Use operation-based filtering
                     operation_filter = typing_cast(OperationColumnFilter, filter_)
                     operation_param = request.query_params.get(
-                        f"{filter_param_name}_op"
+                        f'{filter_param_name}_op'
                     )
                     if operation_param:
                         stmt = await operation_filter.get_filtered_query(
@@ -946,7 +946,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         return stmt.where(*conditions)
 
     async def get_prop_value(self, obj: Any, prop: str) -> Any:
-        for part in prop.split("."):
+        for part in prop.split('.'):
             try:
                 obj = getattr(obj, part, None)
             except DetachedInstanceError:
@@ -996,7 +996,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         """This function generalizes constructing a list of columns
         for any sequence of inclusions or exclusions.
         """
-        if include == "__all__":
+        if include == '__all__':
             return self._prop_names
 
         if include:
@@ -1011,8 +1011,8 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     def get_list_columns(self) -> List[str]:
         """Get list of properties to display in List page."""
 
-        column_list = getattr(self, "column_list", None)
-        column_exclude_list = getattr(self, "column_exclude_list", None)
+        column_list = getattr(self, 'column_list', None)
+        column_exclude_list = getattr(self, 'column_exclude_list', None)
 
         return self._build_column_list(
             include=column_list,
@@ -1023,8 +1023,8 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     def get_details_columns(self) -> List[str]:
         """Get list of properties to display in Detail page."""
 
-        column_details_list = getattr(self, "column_details_list", None)
-        column_details_exclude_list = getattr(self, "column_details_exclude_list", None)
+        column_details_list = getattr(self, 'column_details_list', None)
+        column_details_exclude_list = getattr(self, 'column_details_exclude_list', None)
 
         return self._build_column_list(
             include=column_details_list,
@@ -1035,8 +1035,8 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     def get_form_columns(self) -> List[str]:
         """Get list of properties to display in the form."""
 
-        form_columns = getattr(self, "form_columns", None)
-        form_excluded_columns = getattr(self, "form_excluded_columns", None)
+        form_columns = getattr(self, 'form_columns', None)
+        form_excluded_columns = getattr(self, 'form_excluded_columns', None)
 
         return self._build_column_list(
             include=form_columns,
@@ -1047,8 +1047,8 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     def get_export_columns(self) -> List[str]:
         """Get list of properties to export."""
 
-        columns = getattr(self, "column_export_list", None)
-        excluded_columns = getattr(self, "column_export_exclude_list", None)
+        columns = getattr(self, 'column_export_list', None)
+        excluded_columns = getattr(self, 'column_export_exclude_list', None)
 
         return self._build_column_list(
             include=columns,
@@ -1059,7 +1059,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     def get_filters(self) -> List[ColumnFilter]:
         """Get list of filters."""
 
-        filters = getattr(self, "column_filters", None)
+        filters = getattr(self, 'column_filters', None)
         if not filters:
             return []
 
@@ -1147,7 +1147,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         field_names = [
             self._column_labels.get(field, field) for field in self._search_fields
         ]
-        return ", ".join(field_names)
+        return ', '.join(field_names)
 
     def search_query(self, stmt: Select, term: str) -> Select:
         """Specify the search query given the SQLAlchemy statement
@@ -1162,13 +1162,13 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         expressions = []
         for field in self._search_fields:
             model = self.model
-            parts = field.split(".")
+            parts = field.split('.')
             for part in parts[:-1]:
                 model = getattr(model, part).mapper.class_
                 stmt = stmt.join(model)
 
             field = getattr(model, parts[-1])
-            expressions.append(cast(field, String).ilike(f"%{term}%"))
+            expressions.append(cast(field, String).ilike(f'%{term}%'))
 
         return stmt.filter(or_(*expressions))
 
@@ -1202,7 +1202,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         additional filters.
         """
 
-        stmt = self._stmt_by_identifier(request.path_params["pk"])
+        stmt = self._stmt_by_identifier(request.path_params['pk'])
         for relation in self._form_relations:
             stmt = stmt.options(selectinload(relation))
         return stmt
@@ -1224,18 +1224,18 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
 
         The 'sortBy' and 'sort' query parameters are available in this request context.
         """
-        sort_by = request.query_params.get("sortBy", None)
-        sort = request.query_params.get("sort", "asc")
+        sort_by = request.query_params.get('sortBy', None)
+        sort = request.query_params.get('sort', 'asc')
 
         if sort_by:
-            sort_fields = [(sort_by, sort == "desc")]
+            sort_fields = [(sort_by, sort == 'desc')]
         else:
             sort_fields = self._get_default_sort()
 
         for sort_field, is_desc in sort_fields:
             model = self.model
 
-            parts = self._get_prop_name(sort_field).split(".")
+            parts = self._get_prop_name(sort_field).split('.')
             for part in parts[:-1]:
                 model = getattr(model, part).mapper.class_
                 stmt = stmt.join(model)
@@ -1250,14 +1250,14 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
     def get_export_name(self, export_type: str) -> str:
         """The file name when exporting."""
 
-        return f"{self.name}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.{export_type}"
+        return f'{self.name}_{time.strftime("%Y-%m-%d_%H-%M-%S")}.{export_type}'
 
     async def export_data(
         self,
         data: List[Any],
-        export_type: str = "csv",
+        export_type: str = 'csv',
     ) -> StreamingResponse:
-        if export_type == "csv":
+        if export_type == 'csv':
             export_method = (
                 PrettyExport.pretty_export_csv(self, data)
                 if self.use_pretty_export
@@ -1265,7 +1265,7 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
             )
             return await export_method
 
-        if export_type == "json":
+        if export_type == 'json':
             return await self._export_json(data)
 
         raise NotImplementedError("Only export_type='csv' or 'json' is implemented.")
@@ -1287,12 +1287,12 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
 
         # `get_export_name` can be subclassed.
         # So we want to keep the filename secure outside that method.
-        filename = secure_filename(self.get_export_name(export_type="csv"))
+        filename = secure_filename(self.get_export_name(export_type='csv'))
 
         return StreamingResponse(
             content=stream_to_csv(generate),
-            media_type="text/csv; charset=utf-8",
-            headers={"Content-Disposition": f"attachment;filename={filename}"},
+            media_type='text/csv; charset=utf-8',
+            headers={'Content-Disposition': f'attachment;filename={filename}'},
         )
 
     async def _export_json(
@@ -1301,10 +1301,10 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
         ensure_ascii: bool = False,
     ) -> StreamingResponse:
         async def generate() -> AsyncGenerator[str, None]:
-            yield "["
+            yield '['
             len_data = len(data)
             last_idx = len_data - 1
-            separator = "," if len_data > 1 else ""
+            separator = ',' if len_data > 1 else ''
 
             for idx, row in enumerate(data):
                 row_dict = {
@@ -1315,15 +1315,15 @@ class ModelView(BaseView, metaclass=ModelViewMeta):
                     row_dict,
                     default=default_encoder,
                     ensure_ascii=ensure_ascii,
-                ) + (separator if idx < last_idx else "")
+                ) + (separator if idx < last_idx else '')
 
-            yield "]"
+            yield ']'
 
-        filename = secure_filename(self.get_export_name(export_type="json"))
+        filename = secure_filename(self.get_export_name(export_type='json'))
         return StreamingResponse(
             content=generate(),
-            media_type="application/json",
-            headers={"Content-Disposition": f"attachment;filename={filename}"},
+            media_type='application/json',
+            headers={'Content-Disposition': f'attachment;filename={filename}'},
         )
 
     async def custom_export_cell(

@@ -6,7 +6,7 @@ import pytest
 try:
     from sqlmodel import Field, Relationship, SQLModel
 except ImportError:
-    pytest.skip("SQLModel support for SQLAlchemy v2.", allow_module_level=True)
+    pytest.skip('SQLModel support for SQLAlchemy v2.', allow_module_level=True)
 
 from sqlalchemy.orm import sessionmaker
 
@@ -23,7 +23,7 @@ class Team(SQLModel, table=True):
     name: str = Field(index=True)
     headquarters: str
 
-    heroes: List["Hero"] = Relationship(back_populates="team")
+    heroes: List['Hero'] = Relationship(back_populates='team')
 
 
 class Hero(SQLModel, table=True):
@@ -33,8 +33,8 @@ class Hero(SQLModel, table=True):
     secret_name: str
     age: Optional[int] = None
 
-    team_id: Optional[int] = Field(default=None, foreign_key="team.id")
-    team: Optional[Team] = Relationship(back_populates="heroes")
+    team_id: Optional[int] = Field(default=None, foreign_key='team.id')
+    team: Optional[Team] = Relationship(back_populates='heroes')
 
 
 @pytest.fixture(autouse=True)
@@ -47,10 +47,10 @@ async def prepare_database() -> AsyncGenerator[None, None]:
 async def test_model_form_converter() -> None:
     hero_form = await get_model_form(model=Hero, session_maker=session_maker)
 
-    assert "age" in hero_form()._fields
-    assert "team" in hero_form()._fields
+    assert 'age' in hero_form()._fields
+    assert 'team' in hero_form()._fields
 
     team_form = await get_model_form(model=Team, session_maker=session_maker)
 
-    assert "headquarters" in team_form()._fields
-    assert "heroes" in team_form()._fields
+    assert 'headquarters' in team_form()._fields
+    assert 'heroes' in team_form()._fields

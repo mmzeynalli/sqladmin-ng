@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 
 
 class Query:
-    def __init__(self, model_view: "ModelView") -> None:
+    def __init__(self, model_view: 'ModelView') -> None:
         self.model_view = model_view
 
     def _get_to_many_stmt(self, relation: MODEL_PROPERTY, values: list[Any]) -> Select:
@@ -88,11 +88,11 @@ class Query:
 
             if relation:
                 direction = get_direction(relation)
-                if direction in ["ONETOMANY", "MANYTOMANY"]:
+                if direction in ['ONETOMANY', 'MANYTOMANY']:
                     related_stmt = self._get_to_many_stmt(relation, value)
                     related_objs = session.execute(related_stmt).scalars().all()
                     setattr(obj, key, related_objs)
-                elif direction == "ONETOONE":
+                elif direction == 'ONETOONE':
                     related_stmt = self._get_to_one_stmt(relation, value)
                     related_obj = session.execute(related_stmt).scalars().first()
                     setattr(obj, key, related_obj)
@@ -119,12 +119,12 @@ class Query:
 
             if relation:
                 direction = get_direction(relation)
-                if direction in ["ONETOMANY", "MANYTOMANY"]:
+                if direction in ['ONETOMANY', 'MANYTOMANY']:
                     related_stmt = self._get_to_many_stmt(relation, value)
                     result = await session.execute(related_stmt)
                     related_objs = result.scalars().all()
                     setattr(obj, key, related_objs)
-                elif direction == "ONETOONE":
+                elif direction == 'ONETOONE':
                     related_stmt = self._get_to_one_stmt(relation, value)
                     result = await session.execute(related_stmt)
                     related_obj = result.scalars().first()

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class PrettyExport:
     @staticmethod
     async def _base_export_cell(
-        model_view: "ModelView", name: str, value: Any, formatted_value: Any
+        model_view: 'ModelView', name: str, value: Any, formatted_value: Any
     ) -> str:
         """
         Default formatting logic for a cell in pretty export.
@@ -23,19 +23,19 @@ class PrettyExport:
         """
         if name in model_view._relation_names:
             if isinstance(value, list):
-                cell_value = ",".join(formatted_value)
+                cell_value = ','.join(formatted_value)
             else:
                 cell_value = formatted_value
         else:
             if isinstance(value, bool):
-                cell_value = "TRUE" if value else "FALSE"
+                cell_value = 'TRUE' if value else 'FALSE'
             else:
                 cell_value = formatted_value
         return cell_value
 
     @classmethod
     async def _get_export_row_values(
-        cls, model_view: "ModelView", row: Any, column_names: List[str]
+        cls, model_view: 'ModelView', row: Any, column_names: List[str]
     ) -> List[Any]:
         row_values = []
         for name in column_names:
@@ -52,7 +52,7 @@ class PrettyExport:
 
     @classmethod
     async def pretty_export_csv(
-        cls, model_view: "ModelView", rows: List[Any]
+        cls, model_view: 'ModelView', rows: List[Any]
     ) -> StreamingResponse:
         async def generate(writer: Writer) -> AsyncGenerator[Any, None]:
             column_names = model_view.get_export_columns()
@@ -66,10 +66,10 @@ class PrettyExport:
                 vals = await cls._get_export_row_values(model_view, row, column_names)
                 yield writer.writerow(vals)
 
-        filename = secure_filename(model_view.get_export_name(export_type="csv"))
+        filename = secure_filename(model_view.get_export_name(export_type='csv'))
 
         return StreamingResponse(
             content=stream_to_csv(generate),
-            media_type="text/csv",
-            headers={"Content-Disposition": f"attachment;filename={filename}"},
+            media_type='text/csv',
+            headers={'Content-Disposition': f'attachment;filename={filename}'},
         )

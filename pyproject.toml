@@ -98,6 +98,12 @@ ignore_errors = true
 [tool.ruff]
 lint.select = ["E", "F", "I"]
 
+[tool.ruff.format]
+quote-style = "single"
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+
 [tool.coverage.run]
 source_pkgs = ["sqladmin", "tests"]
 

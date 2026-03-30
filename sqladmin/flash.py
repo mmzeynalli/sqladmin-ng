@@ -10,10 +10,10 @@ class FlashLevel(Enum):
     These values are typically used as CSS classes or categories.
     """
 
-    info = "primary"
-    error = "danger"
-    warning = "warning"
-    success = "success"
+    info = 'primary'
+    error = 'danger'
+    warning = 'warning'
+    success = 'success'
 
 
 class Flash:
@@ -28,7 +28,7 @@ class Flash:
         request: Request,
         message: str,
         level: FlashLevel = FlashLevel.info,
-        title: str = "",
+        title: str = '',
     ) -> bool:
         """
         Adds a custom flash message in any custom level.
@@ -47,7 +47,7 @@ class Flash:
         )
 
     @classmethod
-    def info(cls, request: Request, message: str, title: str = "") -> bool:
+    def info(cls, request: Request, message: str, title: str = '') -> bool:
         """
         Adds an informational flash message (level: INFO).
 
@@ -64,7 +64,7 @@ class Flash:
         )
 
     @classmethod
-    def error(cls, request: Request, message: str, title: str = "") -> bool:
+    def error(cls, request: Request, message: str, title: str = '') -> bool:
         """
         Adds an error flash message (level: ERROR).
 
@@ -81,7 +81,7 @@ class Flash:
         )
 
     @classmethod
-    def warning(cls, request: Request, message: str, title: str = "") -> bool:
+    def warning(cls, request: Request, message: str, title: str = '') -> bool:
         """
         Adds a warning flash message (level: WARNING).
 
@@ -98,7 +98,7 @@ class Flash:
         )
 
     @classmethod
-    def success(cls, request: Request, message: str, title: str = "") -> bool:
+    def success(cls, request: Request, message: str, title: str = '') -> bool:
         """
         Adds a successful action flash message (level: SUCCESS).
 
@@ -117,29 +117,29 @@ class Flash:
 
 def get_flashed_messages(request: Request) -> List[Dict[str, str]]:
     messages: List[Dict[str, str]] = []
-    if "session" not in request.scope:
+    if 'session' not in request.scope:
         return messages
 
-    if "_messages" in request.session:
-        messages = request.session.pop("_messages")
+    if '_messages' in request.session:
+        messages = request.session.pop('_messages')
 
     return messages
 
 
 def flash(
-    request: Request, message: str, category: str = "primary", title: str = ""
+    request: Request, message: str, category: str = 'primary', title: str = ''
 ) -> bool:
-    if "session" not in request.scope:
+    if 'session' not in request.scope:
         return False
 
-    if "_messages" not in request.session:
-        request.session["_messages"] = []
+    if '_messages' not in request.session:
+        request.session['_messages'] = []
 
-    request.session["_messages"].append(
+    request.session['_messages'].append(
         {
-            "category": category,
-            "title": title,
-            "message": message,
+            'category': category,
+            'title': title,
+            'message': message,
         }
     )
 

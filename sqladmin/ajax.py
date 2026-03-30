@@ -18,23 +18,23 @@ class QueryAjaxModelLoader:
         self,
         name: str,
         model: type,
-        model_admin: "ModelView",
+        model_admin: 'ModelView',
         **options: Any,
     ):
         self.name = name
         self.model = model
         self.model_admin = model_admin
-        self.fields = options.get("fields", {})
-        self.order_by = options.get("order_by")
-        self.limit = options.get("limit", DEFAULT_PAGE_SIZE)
+        self.fields = options.get('fields', {})
+        self.order_by = options.get('order_by')
+        self.limit = options.get('limit', DEFAULT_PAGE_SIZE)
 
         pks = get_primary_keys(self.model)
         self.pk = pks[0] if len(pks) == 1 else None
 
         if not self.fields:
             raise ValueError(
-                "AJAX loading requires `fields` to be specified for "
-                f"{self.model}.{self.name}"
+                'AJAX loading requires `fields` to be specified for'
+                f' {self.model}.{self.name}'
             )
 
         self._cached_fields = self._process_fields()
@@ -47,7 +47,7 @@ class QueryAjaxModelLoader:
                 attr = getattr(self.model, field, None)
 
                 if not attr:
-                    raise ValueError(f"{self.model}.{field} does not exist.")
+                    raise ValueError(f'{self.model}.{field} does not exist.')
 
                 remote_fields.append(attr)
             else:
@@ -59,14 +59,14 @@ class QueryAjaxModelLoader:
         if not model:
             return {}
 
-        return {"id": str(get_object_identifier(model)), "text": str(model)}
+        return {'id': str(get_object_identifier(model)), 'text': str(model)}
 
     async def get_list(self, term: str) -> list[Any]:
         stmt = select(self.model)
 
         # no type casting to string if a ColumnAssociationProxyInstance is given
         filters = [
-            cast(field, String).ilike("%%%s%%" % term) for field in self._cached_fields
+            cast(field, String).ilike('%%%s%%' % term) for field in self._cached_fields
         ]
 
         stmt = stmt.filter(or_(*filters))
@@ -85,7 +85,7 @@ class QueryAjaxModelLoader:
 
 def create_ajax_loader(
     *,
-    model_admin: "ModelView",
+    model_admin: 'ModelView',
     name: str,
     options: dict,
 ) -> QueryAjaxModelLoader:
@@ -94,7 +94,7 @@ def create_ajax_loader(
     try:
         attr = mapper.relationships[name]
     except KeyError as exc:
-        raise ValueError(f"{model_admin.model}.{name} is not a relation.") from exc
+        raise ValueError(f'{model_admin.model}.{name} is not a relation.') from exc
 
     remote_model = attr.mapper.class_
     return QueryAjaxModelLoader(name, remote_model, model_admin, **options)

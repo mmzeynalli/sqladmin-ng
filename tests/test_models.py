@@ -36,8 +36,8 @@ admin = Admin(app=app, session_maker=session_maker)
 
 
 class Status(enum.Enum):
-    ACTIVE = "ACTIVE"
-    DEACTIVE = "DEACTIVE"
+    ACTIVE = 'ACTIVE'
+    DEACTIVE = 'DEACTIVE'
 
 
 class Role(int, enum.Enum):
@@ -46,59 +46,59 @@ class Role(int, enum.Enum):
 
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
 
-    addresses = relationship("Address", back_populates="user")
-    profile = relationship("Profile", back_populates="user", uselist=False)
+    addresses = relationship('Address', back_populates='user')
+    profile = relationship('Profile', back_populates='user', uselist=False)
     groups = relationship(
-        "Group", back_populates="users", secondary="user_groups", lazy="raise_on_sql"
+        'Group', back_populates='users', secondary='user_groups', lazy='raise_on_sql'
     )
 
     @property
     def name_with_id(self) -> str:
-        return f"{self.name} - {self.id}"
+        return f'{self.name} - {self.id}'
 
 
 class Group(Base):
-    __tablename__ = "groups"
+    __tablename__ = 'groups'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     users = relationship(
-        "User", back_populates="groups", secondary="user_groups", lazy="raise_on_sql"
+        'User', back_populates='groups', secondary='user_groups', lazy='raise_on_sql'
     )
 
 
 class UserGroup(Base):
-    __tablename__ = "user_groups"
+    __tablename__ = 'user_groups'
 
-    user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
-    group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    group_id = Column(Integer, ForeignKey('groups.id'), primary_key=True)
 
 
 class Address(Base):
-    __tablename__ = "addresses"
+    __tablename__ = 'addresses'
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey('users.id'))
 
-    user = relationship("User", back_populates="addresses")
+    user = relationship('User', back_populates='addresses')
 
 
 class Profile(Base):
-    __tablename__ = "profiles"
+    __tablename__ = 'profiles'
 
     id = Column(Integer, primary_key=True)
     is_active = Column(Boolean)
     role = Column(Enum(Role))
     status = Column(Enum(Status))
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    user_id = Column(Integer, ForeignKey('users.id'), unique=True)
 
-    user = relationship("User", back_populates="profile")
+    user = relationship('User', back_populates='profile')
 
 
 @pytest.fixture(autouse=True)
@@ -110,7 +110,7 @@ def prepare_database() -> Generator[None, None, None]:
 
 @pytest.fixture
 def client() -> Generator[TestClient, None, None]:
-    with TestClient(app=app, base_url="http://testserver") as c:
+    with TestClient(app=app, base_url='http://testserver') as c:
         yield c
 
 
@@ -118,20 +118,20 @@ def test_metadata_setup() -> None:
     class UserAdmin(ModelView, model=User):
         pass
 
-    assert UserAdmin.identity == "user"
-    assert UserAdmin.name == "User"
-    assert UserAdmin.name_plural == "Users"
+    assert UserAdmin.identity == 'user'
+    assert UserAdmin.name == 'User'
+    assert UserAdmin.name_plural == 'Users'
 
     class TempModel(User):
         pass
 
     class TempAdmin(ModelView, model=TempModel):
-        icon = "fa-solid fa-user"
+        icon = 'fa-solid fa-user'
 
-    assert TempAdmin.icon == "fa-solid fa-user"
-    assert TempAdmin.identity == "temp-model"
-    assert TempAdmin.name == "Temp Model"
-    assert TempAdmin.name_plural == "Temp Models"
+    assert TempAdmin.icon == 'fa-solid fa-user'
+    assert TempAdmin.identity == 'temp-model'
+    assert TempAdmin.name == 'Temp Model'
+    assert TempAdmin.name_plural == 'Temp Models'
 
 
 def test_setup_with_invalid_sqlalchemy_model() -> None:
@@ -140,28 +140,28 @@ def test_setup_with_invalid_sqlalchemy_model() -> None:
         class AddressAdmin(ModelView, model=Starlette):
             pass
 
-    assert exc.match("Class Starlette is not a SQLAlchemy model.")
+    assert exc.match('Class Starlette is not a SQLAlchemy model.')
 
 
 def test_column_list_default() -> None:
     class UserAdmin(ModelView, model=User):
         pass
 
-    assert UserAdmin().get_list_columns() == ["id"]
+    assert UserAdmin().get_list_columns() == ['id']
 
 
 def test_column_list_by_model_columns() -> None:
     class UserAdmin(ModelView, model=User):
         column_list = [User.id, User.name]
 
-    assert UserAdmin().get_list_columns() == ["id", "name"]
+    assert UserAdmin().get_list_columns() == ['id', 'name']
 
 
 def test_column_list_by_str_name() -> None:
     class AddressAdmin(ModelView, model=Address):
-        column_list = ["id", "user_id"]
+        column_list = ['id', 'user_id']
 
-    assert AddressAdmin().get_list_columns() == ["id", "user_id"]
+    assert AddressAdmin().get_list_columns() == ['id', 'user_id']
 
 
 def test_column_filters() -> None:
@@ -179,63 +179,63 @@ def test_column_list_both_include_and_exclude() -> None:
     with pytest.raises(AssertionError) as exc:
 
         class InvalidAdmin(ModelView, model=User):
-            column_list = ["id"]
-            column_exclude_list = ["name"]
+            column_list = ['id']
+            column_exclude_list = ['name']
 
-    assert exc.match("Cannot use column_list and column_exclude_list together.")
+    assert exc.match('Cannot use column_list and column_exclude_list together.')
 
 
 def test_column_exclude_list_by_str_name() -> None:
     class UserAdmin(ModelView, model=User):
-        column_exclude_list = ["id"]
+        column_exclude_list = ['id']
 
-    assert UserAdmin().get_list_columns() == ["addresses", "profile", "groups", "name"]
+    assert UserAdmin().get_list_columns() == ['addresses', 'profile', 'groups', 'name']
 
 
 def test_column_exclude_list_by_model_column() -> None:
     class UserAdmin(ModelView, model=User):
         column_exclude_list = [User.id]
 
-    assert UserAdmin().get_list_columns() == ["addresses", "profile", "groups", "name"]
+    assert UserAdmin().get_list_columns() == ['addresses', 'profile', 'groups', 'name']
 
 
 async def test_column_list_formatters() -> None:
     class UserAdmin(ModelView, model=User):
         column_formatters = {
-            "id": lambda *args: 2,
+            'id': lambda *args: 2,
             User.name: lambda m, a: m.name[:1],
         }
 
-    user = User(id=1, name="Long Name")
+    user = User(id=1, name='Long Name')
 
-    assert await UserAdmin().get_list_value(user, "id") == (1, 2)
-    assert await UserAdmin().get_list_value(user, "name") == ("Long Name", "L")
+    assert await UserAdmin().get_list_value(user, 'id') == (1, 2)
+    assert await UserAdmin().get_list_value(user, 'name') == ('Long Name', 'L')
 
 
 async def test_column_formatters_detail() -> None:
     class UserAdmin(ModelView, model=User):
         column_formatters_detail = {
-            "id": lambda *args: 2,
+            'id': lambda *args: 2,
             User.name: lambda m, a: m.name[:1],
         }
 
-    user = User(id=1, name="Long Name")
+    user = User(id=1, name='Long Name')
 
-    assert await UserAdmin().get_detail_value(user, "id") == (1, 2)
-    assert await UserAdmin().get_detail_value(user, "name") == ("Long Name", "L")
+    assert await UserAdmin().get_detail_value(user, 'id') == (1, 2)
+    assert await UserAdmin().get_detail_value(user, 'name') == ('Long Name', 'L')
 
 
 async def test_column_formatters_default() -> None:
     class ProfileAdmin(ModelView, model=Profile): ...
 
-    user = User(id=1, name="Long Name")
+    user = User(id=1, name='Long Name')
     profile = Profile(user=user, is_active=True)
 
-    assert await ProfileAdmin().get_list_value(profile, "is_active") == (
+    assert await ProfileAdmin().get_list_value(profile, 'is_active') == (
         True,
         Markup("<i class='fa fa-check text-success'></i>"),
     )
-    assert await ProfileAdmin().get_detail_value(profile, "is_active") == (
+    assert await ProfileAdmin().get_detail_value(profile, 'is_active') == (
         True,
         Markup("<i class='fa fa-check text-success'></i>"),
     )
@@ -245,11 +245,11 @@ def test_column_details_list_both_include_and_exclude() -> None:
     with pytest.raises(AssertionError) as exc:
 
         class InvalidAdmin(ModelView, model=User):
-            column_details_list = ["id"]
-            column_details_exclude_list = ["name"]
+            column_details_list = ['id']
+            column_details_exclude_list = ['name']
 
     assert exc.match(
-        "Cannot use column_details_list and column_details_exclude_list together."
+        'Cannot use column_details_list and column_details_exclude_list together.'
     )
 
 
@@ -258,11 +258,11 @@ def test_column_details_list_default() -> None:
         pass
 
     assert UserAdmin().get_details_columns() == [
-        "addresses",
-        "profile",
-        "groups",
-        "id",
-        "name",
+        'addresses',
+        'profile',
+        'groups',
+        'id',
+        'name',
     ]
 
 
@@ -270,7 +270,7 @@ def test_column_details_list_by_model_column() -> None:
     class UserAdmin(ModelView, model=User):
         column_details_list = [User.name, User.id]
 
-    assert UserAdmin().get_details_columns() == ["name", "id"]
+    assert UserAdmin().get_details_columns() == ['name', 'id']
 
 
 def test_column_details_exclude_list_by_model_column() -> None:
@@ -278,10 +278,10 @@ def test_column_details_exclude_list_by_model_column() -> None:
         column_details_exclude_list = [User.id]
 
     assert UserAdmin().get_details_columns() == [
-        "addresses",
-        "profile",
-        "groups",
-        "name",
+        'addresses',
+        'profile',
+        'groups',
+        'name',
     ]
 
 
@@ -290,11 +290,11 @@ def test_form_columns_default() -> None:
         pass
 
     assert UserAdmin().get_form_columns() == [
-        "addresses",
-        "profile",
-        "groups",
-        "id",
-        "name",
+        'addresses',
+        'profile',
+        'groups',
+        'id',
+        'name',
     ]
 
 
@@ -302,94 +302,94 @@ def test_form_columns_by_model_columns() -> None:
     class UserAdmin(ModelView, model=User):
         form_columns = [User.id, User.profile, User.name, User.addresses]
 
-    assert UserAdmin().get_form_columns() == ["id", "profile", "name", "addresses"]
+    assert UserAdmin().get_form_columns() == ['id', 'profile', 'name', 'addresses']
 
 
 def test_form_columns_by_str_name() -> None:
     class AddressAdmin(ModelView, model=Address):
-        form_columns = ["id", "user_id"]
+        form_columns = ['id', 'user_id']
 
-    assert AddressAdmin().get_form_columns() == ["id", "user_id"]
+    assert AddressAdmin().get_form_columns() == ['id', 'user_id']
 
 
 def test_form_columns_both_include_and_exclude() -> None:
     with pytest.raises(AssertionError) as exc:
 
         class InvalidAdmin(ModelView, model=User):
-            form_columns = ["id"]
-            form_excluded_columns = ["name"]
+            form_columns = ['id']
+            form_excluded_columns = ['name']
 
-    assert exc.match("Cannot use form_columns and form_excluded_columns together.")
+    assert exc.match('Cannot use form_columns and form_excluded_columns together.')
 
 
 def test_form_excluded_columns_by_str_name() -> None:
     class UserAdmin(ModelView, model=User):
-        form_excluded_columns = ["id"]
+        form_excluded_columns = ['id']
 
-    assert UserAdmin().get_form_columns() == ["addresses", "profile", "groups", "name"]
+    assert UserAdmin().get_form_columns() == ['addresses', 'profile', 'groups', 'name']
 
 
 def test_form_excluded_columns_by_model_column() -> None:
     class UserAdmin(ModelView, model=User):
         form_excluded_columns = [User.id]
 
-    assert UserAdmin().get_form_columns() == ["addresses", "profile", "groups", "name"]
+    assert UserAdmin().get_form_columns() == ['addresses', 'profile', 'groups', 'name']
 
 
 def test_export_columns_default() -> None:
     class UserAdmin(ModelView, model=User):
         pass
 
-    assert UserAdmin().get_export_columns() == ["id"]
+    assert UserAdmin().get_export_columns() == ['id']
 
 
 def test_export_columns_default_to_list_columns() -> None:
     class UserAdmin(ModelView, model=User):
         column_list = [User.id, User.name]
 
-    assert UserAdmin().get_export_columns() == ["id", "name"]
+    assert UserAdmin().get_export_columns() == ['id', 'name']
 
     class UserAdmin2(ModelView, model=User):
         column_list = [User.id]
 
-    assert UserAdmin2().get_export_columns() == ["id"]
+    assert UserAdmin2().get_export_columns() == ['id']
 
 
 def test_export_columns_by_model_columns() -> None:
     class UserAdmin(ModelView, model=User):
         column_export_list = [User.id, User.name]
 
-    assert UserAdmin().get_export_columns() == ["id", "name"]
+    assert UserAdmin().get_export_columns() == ['id', 'name']
 
 
 def test_export_columns_by_str_name() -> None:
     class AddressAdmin(ModelView, model=Address):
-        column_export_list = ["id", "user_id"]
+        column_export_list = ['id', 'user_id']
 
-    assert AddressAdmin().get_export_columns() == ["id", "user_id"]
+    assert AddressAdmin().get_export_columns() == ['id', 'user_id']
 
 
 def test_export_columns_both_include_and_exclude() -> None:
     with pytest.raises(AssertionError) as exc:
 
         class InvalidAdmin(ModelView, model=User):
-            column_export_list = ["id"]
-            column_export_exclude_list = ["name"]
+            column_export_list = ['id']
+            column_export_exclude_list = ['name']
 
     assert exc.match(
-        "Cannot use column_export_list and column_export_exclude_list together."
+        'Cannot use column_export_list and column_export_exclude_list together.'
     )
 
 
 def test_export_excluded_columns_by_str_name() -> None:
     class UserAdmin(ModelView, model=User):
-        column_export_exclude_list = ["id"]
+        column_export_exclude_list = ['id']
 
     assert UserAdmin().get_export_columns() == [
-        "addresses",
-        "profile",
-        "groups",
-        "name",
+        'addresses',
+        'profile',
+        'groups',
+        'name',
     ]
 
 
@@ -398,27 +398,27 @@ def test_export_excluded_columns_by_model_column() -> None:
         column_export_exclude_list = [User.id]
 
     assert UserAdmin().get_export_columns() == [
-        "addresses",
-        "profile",
-        "groups",
-        "name",
+        'addresses',
+        'profile',
+        'groups',
+        'name',
     ]
 
 
-@pytest.mark.skipif(engine.name != "postgresql", reason="PostgreSQL only")
+@pytest.mark.skipif(engine.name != 'postgresql', reason='PostgreSQL only')
 def test_get_python_type_postgresql() -> None:
     class PostgresModel(Base):
-        __tablename__ = "postgres_model"
+        __tablename__ = 'postgres_model'
 
         uuid = Column(UUID, primary_key=True)
 
     get_column_python_type(PostgresModel.uuid) is str
 
 
-@pytest.mark.skipif(engine.name != "postgresql", reason="PostgreSQL only")
+@pytest.mark.skipif(engine.name != 'postgresql', reason='PostgreSQL only')
 def test_get_python_annotated_type_postgresql() -> None:
     class PostgresModel(Base):
-        __tablename__ = "postgres_model2"
+        __tablename__ = 'postgres_model2'
 
         uuid: Mapped[PyUUID] = mapped_column(primary_key=True)
 
@@ -428,27 +428,27 @@ def test_get_python_annotated_type_postgresql() -> None:
 def test_model_default_sort() -> None:
     class UserAdmin(ModelView, model=User): ...
 
-    assert UserAdmin()._get_default_sort() == [("id", False)]
+    assert UserAdmin()._get_default_sort() == [('id', False)]
 
     class UserAdmin(ModelView, model=User):
-        column_default_sort = "name"
+        column_default_sort = 'name'
 
-    assert UserAdmin()._get_default_sort() == [("name", False)]
-
-    class UserAdmin(ModelView, model=User):
-        column_default_sort = ("name", True)
-
-    assert UserAdmin()._get_default_sort() == [("name", True)]
+    assert UserAdmin()._get_default_sort() == [('name', False)]
 
     class UserAdmin(ModelView, model=User):
-        column_default_sort = [("name", True), ("id", False)]
+        column_default_sort = ('name', True)
 
-    assert UserAdmin()._get_default_sort() == [("name", True), ("id", False)]
+    assert UserAdmin()._get_default_sort() == [('name', True)]
+
+    class UserAdmin(ModelView, model=User):
+        column_default_sort = [('name', True), ('id', False)]
+
+    assert UserAdmin()._get_default_sort() == [('name', True), ('id', False)]
 
 
 async def test_get_model_objects_uses_list_query() -> None:
     session = session_maker()
-    batman = User(name="batman")
+    batman = User(name='batman')
     session.add(batman)
     session.commit()
 
@@ -457,19 +457,19 @@ async def test_get_model_objects_uses_list_query() -> None:
         session_maker = session_maker
 
         def list_query(self, request: Request) -> Select:
-            return super().list_query(request).filter(User.name.endswith("man"))
+            return super().list_query(request).filter(User.name.endswith('man'))
 
     view = UserAdmin()
-    request = Request({"type": "http"})
+    request = Request({'type': 'http'})
 
     assert len(await view.get_model_objects(request)) == 1
 
 
 async def test_get_details_query() -> None:
     session = session_maker()
-    batman = User(id=123, name="batman")
-    gotham = Group(users=[batman], name="gotham city")
-    dc = Group(users=[batman], name="dc")
+    batman = User(id=123, name='batman')
+    gotham = Group(users=[batman], name='gotham city')
+    dc = Group(users=[batman], name='dc')
     session.add(batman)
     session.add(gotham)
     session.add(dc)
@@ -480,16 +480,16 @@ async def test_get_details_query() -> None:
         session_maker = session_maker
 
     view = UserAdmin()
-    request = Request({"type": "http", "path_params": {"pk": 123}})
+    request = Request({'type': 'http', 'path_params': {'pk': 123}})
     user = await view.get_object_for_details(request)
     assert len(user.groups) == 2
 
 
 async def test_form_edit_query() -> None:
     session = session_maker()
-    batman = User(id=123, name="batman")
-    batcave = Address(user=batman, name="bat cave")
-    wayne_manor = Address(user=batman, name="wayne manor")
+    batman = User(id=123, name='batman')
+    batcave = Address(user=batman, name='bat cave')
+    wayne_manor = Address(user=batman, name='wayne manor')
     session.add(batman)
     session.add(batcave)
     session.add(wayne_manor)
@@ -504,7 +504,7 @@ async def test_form_edit_query() -> None:
                 select(self.model)
                 .join(Address)
                 .options(contains_eager(User.addresses))
-                .filter(Address.name == "bat cave")
+                .filter(Address.name == 'bat cave')
             )
 
     view = UserAdmin()
@@ -513,7 +513,7 @@ async def test_form_edit_query() -> None:
         pass
 
     request_object = RequestObject()
-    request_object.path_params = {"pk": 123}
+    request_object.path_params = {'pk': 123}
     user_obj = await view.get_object_for_edit(request_object)
 
     assert len(user_obj.addresses) == 1
@@ -521,11 +521,11 @@ async def test_form_edit_query() -> None:
 
 def test_model_columns_all_keyword() -> None:
     class AddressAdmin(ModelView, model=Address):
-        column_list = "__all__"
-        column_details_list = "__all__"
+        column_list = '__all__'
+        column_details_list = '__all__'
 
-    assert AddressAdmin().get_list_columns() == ["user", "id", "name", "user_id"]
-    assert AddressAdmin().get_details_columns() == ["user", "id", "name", "user_id"]
+    assert AddressAdmin().get_list_columns() == ['user', 'id', 'name', 'user_id']
+    assert AddressAdmin().get_details_columns() == ['user', 'id', 'name', 'user_id']
 
 
 async def test_get_prop_value() -> None:
@@ -533,32 +533,32 @@ async def test_get_prop_value() -> None:
         session_maker = session_maker
 
     with session_maker() as session:
-        user = User(name="admin")
+        user = User(name='admin')
         address = Address(user=user)
         profile = Profile(role=Role.ADMIN, status=Status.ACTIVE, user=user)
         session.add_all([user, address, profile])
         session.commit()
 
-    assert await ProfileAdmin().get_prop_value(profile, "role") == "ADMIN"
-    assert await ProfileAdmin().get_prop_value(profile, "status") == "ACTIVE"
-    assert await ProfileAdmin().get_prop_value(profile, "user.name") == "admin"
+    assert await ProfileAdmin().get_prop_value(profile, 'role') == 'ADMIN'
+    assert await ProfileAdmin().get_prop_value(profile, 'status') == 'ACTIVE'
+    assert await ProfileAdmin().get_prop_value(profile, 'user.name') == 'admin'
 
 
 async def test_model_property_in_columns() -> None:
     class UserAdmin(ModelView, model=User):
-        column_list = ["id", "name", "name_with_id"]
+        column_list = ['id', 'name', 'name_with_id']
 
-    user = User(id=1, name="batman")
+    user = User(id=1, name='batman')
 
-    assert UserAdmin().get_list_columns() == ["id", "name", "name_with_id"]
+    assert UserAdmin().get_list_columns() == ['id', 'name', 'name_with_id']
     assert UserAdmin().get_details_columns() == [
-        "addresses",
-        "profile",
-        "groups",
-        "id",
-        "name",
+        'addresses',
+        'profile',
+        'groups',
+        'id',
+        'name',
     ]
-    assert await UserAdmin().get_prop_value(user, "name_with_id") == "batman - 1"
+    assert await UserAdmin().get_prop_value(user, 'name_with_id') == 'batman - 1'
 
 
 def test_sort_query() -> None:
@@ -566,38 +566,38 @@ def test_sort_query() -> None:
 
     query = select(Address)
 
-    request = Request({"type": "http", "query_string": "sortBy=id&sort=asc"})
+    request = Request({'type': 'http', 'query_string': 'sortBy=id&sort=asc'})
     stmt = AddressAdmin().sort_query(query, request)
-    assert "ORDER BY addresses.id ASC" in str(stmt)
+    assert 'ORDER BY addresses.id ASC' in str(stmt)
 
-    request = Request({"type": "http", "query_string": b"sortBy=user.name&sort=desc"})
+    request = Request({'type': 'http', 'query_string': b'sortBy=user.name&sort=desc'})
     stmt = AddressAdmin().sort_query(query, request)
-    assert "ORDER BY users.name DESC" in str(stmt)
+    assert 'ORDER BY users.name DESC' in str(stmt)
 
-    request = Request({"type": "http", "query_string": b"sortBy=user.profile.role"})
+    request = Request({'type': 'http', 'query_string': b'sortBy=user.profile.role'})
     stmt = AddressAdmin().sort_query(query, request)
-    assert "ORDER BY profiles.role ASC" in str(stmt)
+    assert 'ORDER BY profiles.role ASC' in str(stmt)
 
 
 def test_search_query() -> None:
     class AddressAdmin(ModelView, model=Address):
-        column_searchable_list = ["user.name", "user.profile.role"]
+        column_searchable_list = ['user.name', 'user.profile.role']
 
-    stmt = AddressAdmin().search_query(select(Address), "example")
-    assert "lower(CAST(users.name AS VARCHAR))" in str(stmt)
-    assert "lower(CAST(profiles.role AS VARCHAR))" in str(stmt)
+    stmt = AddressAdmin().search_query(select(Address), 'example')
+    assert 'lower(CAST(users.name AS VARCHAR))' in str(stmt)
+    assert 'lower(CAST(profiles.role AS VARCHAR))' in str(stmt)
 
 
 def test_expose_decorator(client: TestClient) -> None:
     class UserAdmin(ModelView, model=User):
-        @expose("/profile/{pk}")
+        @expose('/profile/{pk}')
         async def profile(self, request: Request):
             user: User = await self.get_object_for_edit(request)
             return await self.templates.TemplateResponse(
-                request, "user.html", {"user": user}
+                request, 'user.html', {'user': user}
             )
 
     admin.add_view(UserAdmin)
 
-    with pytest.raises(TemplateNotFound, match="user.html"):
-        client.get("/admin/user/profile/1")
+    with pytest.raises(TemplateNotFound, match='user.html'):
+        client.get('/admin/user/profile/1')

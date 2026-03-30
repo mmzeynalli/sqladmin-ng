@@ -19,16 +19,16 @@ Base = declarative_base()  # type: ignore
 
 
 class DataModel(Base):
-    __tablename__ = "datamodel"
+    __tablename__ = 'datamodel'
     id = Column(Integer, primary_key=True)
     data = Column(String)
 
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(32), default="SQLAdmin-NG")
+    name = Column(String(32), default='SQLAdmin-NG')
 
 
 @pytest.fixture(autouse=True)
@@ -43,11 +43,11 @@ def test_application_title() -> None:
     Admin(app=app, engine=engine)
 
     with TestClient(app) as client:
-        response = client.get("/admin")
+        response = client.get('/admin')
 
     assert response.status_code == 200
-    assert "<h3>Admin</h3>" in response.text
-    assert "<title>Admin</title>" in response.text
+    assert '<h3>Admin</h3>' in response.text
+    assert '<title>Admin</title>' in response.text
 
 
 def test_application_logo() -> None:
@@ -55,12 +55,12 @@ def test_application_logo() -> None:
     Admin(
         app=app,
         engine=engine,
-        logo_url="https://example.com/logo.svg",
-        base_url="/dashboard",
+        logo_url='https://example.com/logo.svg',
+        base_url='/dashboard',
     )
 
     with TestClient(app) as client:
-        response = client.get("/dashboard")
+        response = client.get('/dashboard')
 
     assert response.status_code == 200
     assert (
@@ -76,9 +76,9 @@ def test_middlewares() -> None:
 
         async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
             async def send_wrapper(message: Message) -> None:
-                if message["type"] == "http.response.start":
+                if message['type'] == 'http.response.start':
                     headers = MutableHeaders(scope=message)
-                    headers.append("X-Correlation-ID", "UUID")
+                    headers.append('X-Correlation-ID', 'UUID')
                 await send(message)
 
             await self.app(scope, receive, send_wrapper)
@@ -91,10 +91,10 @@ def test_middlewares() -> None:
     )
 
     with TestClient(app) as client:
-        response = client.get("/admin")
+        response = client.get('/admin')
 
     assert response.status_code == 200
-    assert "x-correlation-id" in response.headers
+    assert 'x-correlation-id' in response.headers
 
 
 def test_get_save_redirect_url():
@@ -106,7 +106,7 @@ def test_get_save_redirect_url():
 
     app = Starlette(
         routes=[
-            Route("/{identity}", index, methods=["POST"]),
+            Route('/{identity}', index, methods=['POST']),
         ]
     )
     admin = Admin(app=app, engine=engine)
@@ -118,17 +118,17 @@ def test_get_save_redirect_url():
 
     client = TestClient(app)
 
-    response = client.post("/user", data={"save": "Save"})
-    assert response.text == "http://testserver/admin/user/list"
+    response = client.post('/user', data={'save': 'Save'})
+    assert response.text == 'http://testserver/admin/user/list'
 
-    response = client.post("/user", data={"save": "Save and continue editing"})
-    assert response.text == "http://testserver/admin/user/edit/1"
+    response = client.post('/user', data={'save': 'Save and continue editing'})
+    assert response.text == 'http://testserver/admin/user/edit/1'
 
-    response = client.post("/user", data={"save": "Save as new"})
-    assert response.text == "http://testserver/admin/user/edit/1"
+    response = client.post('/user', data={'save': 'Save as new'})
+    assert response.text == 'http://testserver/admin/user/edit/1'
 
-    response = client.post("/user", data={"save": "Save and add another"})
-    assert response.text == "http://testserver/admin/user/create"
+    response = client.post('/user', data={'save': 'Save and add another'})
+    assert response.text == 'http://testserver/admin/user/create'
 
 
 def test_build_category_menu():
@@ -136,11 +136,11 @@ def test_build_category_menu():
     admin = Admin(app=app, engine=engine)
 
     class UserAdmin(ModelView, model=User):
-        category = "Accounts"
+        category = 'Accounts'
 
     admin.add_view(UserAdmin)
 
-    admin._menu.items.pop().name = "Accounts"
+    admin._menu.items.pop().name = 'Accounts'
 
 
 def test_normalize_wtform_fields() -> None:
@@ -149,9 +149,9 @@ def test_normalize_wtform_fields() -> None:
 
     class DataModelAdmin(ModelView, model=DataModel): ...
 
-    datamodel = DataModel(id=1, data="abcdef")
+    datamodel = DataModel(id=1, data='abcdef')
     admin.add_view(DataModelAdmin)
-    assert admin._normalize_wtform_data(datamodel) == {"data_": "abcdef"}
+    assert admin._normalize_wtform_data(datamodel) == {'data_': 'abcdef'}
 
 
 def test_denormalize_wtform_fields() -> None:
@@ -160,10 +160,10 @@ def test_denormalize_wtform_fields() -> None:
 
     class DataModelAdmin(ModelView, model=DataModel): ...
 
-    datamodel = DataModel(id=1, data="abcdef")
+    datamodel = DataModel(id=1, data='abcdef')
     admin.add_view(DataModelAdmin)
-    assert admin._denormalize_wtform_data({"data_": "abcdef"}, datamodel) == {
-        "data": "abcdef"
+    assert admin._denormalize_wtform_data({'data_': 'abcdef'}, datamodel) == {
+        'data': 'abcdef'
     }
 
 
@@ -177,10 +177,10 @@ def test_validate_page_and_page_size():
 
     client = TestClient(app)
 
-    response = client.get("/admin/user/list?page=10000")
+    response = client.get('/admin/user/list?page=10000')
     assert response.status_code == 200
 
-    response = client.get("/admin/user/list?page=aaaa")
+    response = client.get('/admin/user/list?page=aaaa')
     assert response.status_code == 400
 
 
@@ -189,7 +189,7 @@ def test_is_list_template_global():
     app = Starlette()
     admin = Admin(app=app, engine=engine)
 
-    is_list = admin.templates.env.globals["is_list"]
+    is_list = admin.templates.env.globals['is_list']
 
     # Should return True for list and set
     assert is_list([1, 2, 3]) is True
@@ -198,7 +198,7 @@ def test_is_list_template_global():
     assert is_list(set()) is True
 
     # Should return False for non-collection types
-    assert is_list("string") is False
+    assert is_list('string') is False
     assert is_list(123) is False
     assert is_list(None) is False
-    assert is_list({"key": "value"}) is False
+    assert is_list({'key': 'value'}) is False

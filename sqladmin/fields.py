@@ -15,16 +15,16 @@ from sqladmin.ajax import QueryAjaxModelLoader
 from sqladmin.helpers import get_object_identifier, parse_interval
 
 __all__ = [
-    "AjaxSelectField",
-    "AjaxSelectMultipleField",
-    "DateField",
-    "DateTimeField",
-    "IntervalField",
-    "JSONField",
-    "QuerySelectField",
-    "QuerySelectMultipleField",
-    "SelectField",
-    "Select2TagsField",
+    'AjaxSelectField',
+    'AjaxSelectMultipleField',
+    'DateField',
+    'DateTimeField',
+    'IntervalField',
+    'JSONField',
+    'QuerySelectField',
+    'QuerySelectMultipleField',
+    'SelectField',
+    'Select2TagsField',
 ]
 
 
@@ -55,7 +55,7 @@ class IntervalField(fields.StringField):
 
         interval = parse_interval(valuelist[0])
         if not interval:
-            raise ValueError("Invalide timedelta format.")
+            raise ValueError('Invalide timedelta format.')
 
         self.data = interval  # type: ignore[assignment]
 
@@ -73,13 +73,13 @@ class SelectField(fields.SelectField):
     ) -> None:
         super().__init__(label, validators, coerce, choices, **kwargs)
         self.allow_blank = allow_blank
-        self.blank_text = blank_text or " "
+        self.blank_text = blank_text or ' '
 
     def iter_choices(self) -> Generator[tuple[str, str, bool, dict], None, None]:
         choices = self.choices or []
 
         if self.allow_blank:
-            yield ("__None", self.blank_text, self.data is None, {})
+            yield ('__None', self.blank_text, self.data is None, {})
 
         for choice in choices:
             if isinstance(choice, tuple):
@@ -96,14 +96,14 @@ class SelectField(fields.SelectField):
 
     def process_formdata(self, valuelist: list[str]) -> None:
         if valuelist:
-            if valuelist[0] == "__None":
+            if valuelist[0] == '__None':
                 self.data = None
             else:
                 try:
                     self.data = self.coerce(valuelist[0])
                 except ValueError as exc:
                     raise ValueError(
-                        self.gettext("Invalid Choice: could not coerce")
+                        self.gettext('Invalid Choice: could not coerce')
                     ) from exc
 
     def pre_validate(self, form: Form) -> None:
@@ -121,7 +121,7 @@ class JSONField(fields.TextAreaField):
         if self.data:
             return str(json.dumps(self.data, ensure_ascii=False))
 
-        return "{}"
+        return '{}'
 
     def process_formdata(self, valuelist: list[str]) -> None:
         if valuelist:
@@ -135,7 +135,7 @@ class JSONField(fields.TextAreaField):
             try:
                 self.data = json.loads(valuelist[0])
             except ValueError as exc:
-                raise ValueError(self.gettext("Invalid JSON")) from exc
+                raise ValueError(self.gettext('Invalid JSON')) from exc
 
 
 class QuerySelectField(fields.SelectFieldBase):
@@ -148,7 +148,7 @@ class QuerySelectField(fields.SelectFieldBase):
         validators: list | None = None,
         get_label: Callable | str | None = None,
         allow_blank: bool = False,
-        blank_text: str = "",
+        blank_text: str = '',
         **kwargs: Any,
     ) -> None:
         super().__init__(label=label, validators=validators, **kwargs)
@@ -183,7 +183,7 @@ class QuerySelectField(fields.SelectFieldBase):
 
     def iter_choices(self) -> Generator[tuple[str, str, bool, dict], None, None]:
         if self.allow_blank:
-            yield ("__None", self.blank_text, self.data is None, {})
+            yield ('__None', self.blank_text, self.data is None, {})
 
         if self.data:
             primary_key = (
@@ -199,7 +199,7 @@ class QuerySelectField(fields.SelectFieldBase):
 
     def process_formdata(self, valuelist: list[str]) -> None:
         if valuelist:
-            if self.allow_blank and valuelist[0] == "__None":
+            if self.allow_blank and valuelist[0] == '__None':
                 self.data = None
             else:
                 self._data = None
@@ -212,9 +212,9 @@ class QuerySelectField(fields.SelectFieldBase):
                 if data == pk:
                     break
             else:  # pragma: no cover
-                raise ValidationError(self.gettext("Not a valid choice"))
+                raise ValidationError(self.gettext('Not a valid choice'))
         elif self._formdata or not self.allow_blank:
-            raise ValidationError(self.gettext("Not a valid choice"))
+            raise ValidationError(self.gettext('Not a valid choice'))
 
 
 class QuerySelectMultipleField(QuerySelectField):
@@ -242,11 +242,11 @@ class QuerySelectMultipleField(QuerySelectField):
 
         self._select_data = data or []
 
-        if kwargs.get("allow_blank", False):
+        if kwargs.get('allow_blank', False):
             import warnings
 
             warnings.warn(
-                "allow_blank=True does not do anything for QuerySelectMultipleField."
+                'allow_blank=True does not do anything for QuerySelectMultipleField.'
             )
         self._invalid_formdata = False
         self._formdata: list[str] | None = None
@@ -289,18 +289,18 @@ class QuerySelectMultipleField(QuerySelectField):
 
     def pre_validate(self, form: Form) -> None:
         if self._invalid_formdata:
-            raise ValidationError(self.gettext("Not a valid choice"))
+            raise ValidationError(self.gettext('Not a valid choice'))
 
         if self.data:
             pk_list = [x[0] for x in self._select_data]
             for v in self.data:
                 if v not in pk_list:  # pragma: no cover
-                    raise ValidationError(self.gettext("Not a valid choice"))
+                    raise ValidationError(self.gettext('Not a valid choice'))
 
 
 class AjaxSelectField(fields.SelectFieldBase):
     widget = sqladmin_widgets.AjaxSelect2Widget()
-    separator = ","
+    separator = ','
 
     def __init__(
         self,
@@ -310,7 +310,7 @@ class AjaxSelectField(fields.SelectFieldBase):
         allow_blank: bool = False,
         **kwargs: Any,
     ) -> None:
-        kwargs.pop("data", None)  # Handled by JS side
+        kwargs.pop('data', None)  # Handled by JS side
         self.loader = loader
         self.allow_blank = allow_blank
         super().__init__(label, validators, **kwargs)
@@ -329,7 +329,7 @@ class AjaxSelectField(fields.SelectFieldBase):
 
     def process_formdata(self, valuelist: list) -> None:
         if valuelist:
-            if self.allow_blank and valuelist[0] == "__None":
+            if self.allow_blank and valuelist[0] == '__None':
                 self.data = None
             else:
                 self._data = None
@@ -337,12 +337,12 @@ class AjaxSelectField(fields.SelectFieldBase):
 
     def pre_validate(self, form: Form) -> None:
         if not self.allow_blank and self.data is None:
-            raise ValidationError("Not a valid choice")
+            raise ValidationError('Not a valid choice')
 
 
 class AjaxSelectMultipleField(fields.SelectFieldBase):
     widget = sqladmin_widgets.AjaxSelect2Widget(multiple=True)  # type: ignore[assignment]
-    separator = ","
+    separator = ','
 
     def __init__(
         self,
@@ -353,7 +353,7 @@ class AjaxSelectMultipleField(fields.SelectFieldBase):
         allow_blank: bool = False,
         **kwargs: Any,
     ) -> None:
-        kwargs.pop("data", None)  # Handled by JS side
+        kwargs.pop('data', None)  # Handled by JS side
         self.loader = loader
         self.allow_blank = allow_blank
         default = default or []
@@ -414,7 +414,7 @@ class UuidField(fields.StringField):
                 self.data = UUID(value)  # type: ignore[assignment]
             except (ValueError, AttributeError, TypeError) as e:
                 self.data = None
-                raise ValidationError(f"Invalid UUID format. {e}")
+                raise ValidationError(f'Invalid UUID format. {e}')
         else:
             self.data = None
 

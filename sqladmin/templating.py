@@ -26,15 +26,15 @@ class _TemplateResponse(HTMLResponse):
         super().__init__(content, status_code, headers, media_type, background)
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        request = self.context.get("request", {})
-        extensions = request.get("extensions", {})
-        if "http.response.debug" in extensions:
+        request = self.context.get('request', {})
+        extensions = request.get('extensions', {})
+        if 'http.response.debug' in extensions:
             await send(
                 {
-                    "type": "http.response.debug",
-                    "info": {
-                        "template": self.template,
-                        "context": self.context,
+                    'type': 'http.response.debug',
+                    'info': {
+                        'template': self.template,
+                        'context': self.context,
                     },
                 }
             )
@@ -45,12 +45,12 @@ class Jinja2Templates:
     def __init__(self, directory: str) -> None:
         @jinja2.pass_context
         def url_for(context: dict, __name: str, **path_params: Any) -> URL:
-            request: Request = context["request"]
+            request: Request = context['request']
             return request.url_for(__name, **path_params)
 
         loader = jinja2.FileSystemLoader(directory)
         self.env = jinja2.Environment(loader=loader, autoescape=True, enable_async=True)
-        self.env.globals["url_for"] = url_for
+        self.env.globals['url_for'] = url_for
 
     async def TemplateResponse(
         self,
@@ -60,7 +60,7 @@ class Jinja2Templates:
         status_code: int = 200,
     ) -> _TemplateResponse:
         context = context or {}
-        context.setdefault("request", request)
+        context.setdefault('request', request)
         template = self.env.get_template(name)
         content = await template.render_async(context)
         return _TemplateResponse(template, content, context, status_code)

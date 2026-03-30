@@ -3,7 +3,7 @@ from starlette.datastructures import URL
 
 from sqladmin.pagination import PageControl, Pagination
 
-BASE_URL = URL("http://testserver/users/list")
+BASE_URL = URL('http://testserver/users/list')
 
 
 def test_single_page() -> None:
@@ -24,7 +24,7 @@ def test_multi_page_first_page() -> None:
 
     assert pagination.has_previous is False
     assert pagination.has_next is True
-    assert pagination.next_page.url == "http://testserver/users/list?page=2"
+    assert pagination.next_page.url == 'http://testserver/users/list?page=2'
     with pytest.raises(RuntimeError):
         pagination.previous_page
 
@@ -33,7 +33,7 @@ def test_multi_page_last_page() -> None:
     pagination = Pagination(rows=[], page=4, page_size=5, count=18)
     pagination.add_pagination_urls(BASE_URL)
 
-    page_control = PageControl(number=4, url="http://testserver/users/list?page=4")
+    page_control = PageControl(number=4, url='http://testserver/users/list?page=4')
     assert page_control in pagination.page_controls
     assert pagination.has_previous is True
     with pytest.raises(RuntimeError):
@@ -45,7 +45,7 @@ def test_multi_page_equal_previous_and_next() -> None:
     pagination.add_pagination_urls(BASE_URL)
 
     page_controls = [
-        PageControl(number=i, url=f"http://testserver/users/list?page={i}")
+        PageControl(number=i, url=f'http://testserver/users/list?page={i}')
         for i in range(2, 9)
     ]
 
@@ -57,7 +57,7 @@ def test_multi_page_unequal_previous_and_next() -> None:
     pagination.add_pagination_urls(BASE_URL)
 
     page_controls = [
-        PageControl(number=i, url=f"http://testserver/users/list?page={i}")
+        PageControl(number=i, url=f'http://testserver/users/list?page={i}')
         for i in range(1, 8)
     ]
 
@@ -67,7 +67,7 @@ def test_multi_page_unequal_previous_and_next() -> None:
     pagination.add_pagination_urls(BASE_URL)
 
     page_controls = [
-        PageControl(number=i, url=f"http://testserver/users/list?page={i}")
+        PageControl(number=i, url=f'http://testserver/users/list?page={i}')
         for i in range(4, 11)
     ]
 

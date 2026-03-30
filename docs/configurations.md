@@ -496,7 +496,7 @@ To add custom action on models to the Admin, you can use the `action` decorator.
                     ...
 
             referer = request.headers.get("Referer")
-            Flash.success("Users approved successfully")
+            Flash.success(request, "Users approved successfully")
             if referer:
                 return RedirectResponse(referer)
             else:
@@ -533,7 +533,7 @@ The general-purpose method for adding any message with an explicitly defined `Fl
 
     ```python
     from sqladmin import Flash, FlashLevel
-    
+
     # Explicitly setting the level
     Flash.flash(request, "A crucial server process has started.", FlashLevel.warning, "System Alert")
     ```
@@ -554,10 +554,10 @@ They accept the same `request`, `message`, and optional `title` parameters.
 
     ```python
     from sqladmin import Flash, FlashLevel
-    
+
     # Using the success shortcut
     Flash.success(request, "Your profile was updated successfully.", "Update Complete")
-    
+
     # Using the error shortcut
     Flash.error(request, "Access denied. Invalid credentials provided.")
     ```
