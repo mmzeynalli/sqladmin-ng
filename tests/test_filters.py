@@ -49,7 +49,7 @@ admin = Admin(app=app, engine=engine, templates_dir='tests/templates')
 
 
 def create_user_table():
-    """Create User table with optional UUID column based on SQLAlchemy version"""  # noqa: E501
+    """Create User table with optional UUID column based on SQLAlchemy version"""
 
     class User(Base):
         __tablename__ = 'users'
@@ -334,7 +334,7 @@ async def test_boolean_filter_functionality(client: AsyncClient) -> None:
 
 @pytest.mark.anyio
 async def test_foreign_key_filter_functionality(client: AsyncClient) -> None:
-    """Test that foreign key filters correctly filter users based on their office."""  # noqa: E501
+    """Test that foreign key filters correctly filter users based on their office."""
     response = await client.get('/admin/user/list')
     assert response.status_code == 200
     assert 'Office1' in response.text
@@ -350,7 +350,7 @@ async def test_foreign_key_filter_functionality(client: AsyncClient) -> None:
 
 @pytest.mark.anyio
 async def test_static_values_filter_functionality(client: AsyncClient) -> None:
-    """Test that static values filters correctly filter users based on their name."""  # noqa: E501
+    """Test that static values filters correctly filter users based on their name."""
     response = await client.get('/admin/user/list?static_name=Admin User')
     assert response.status_code == 200
     assert 'adminadmin' in response.text
@@ -361,7 +361,7 @@ async def test_static_values_filter_functionality(client: AsyncClient) -> None:
 
 @pytest.mark.anyio
 async def test_applied_filter_highlighting(client: AsyncClient) -> None:
-    """Test that applied filters are visually highlighted and have a clear button."""  # noqa: E501
+    """Test that applied filters are visually highlighted and have a clear button."""
     # Test with is_admin=true filter applied
     response = await client.get('/admin/user/list?is_admin=true')
     assert response.status_code == 200
@@ -503,7 +503,7 @@ async def test_column_filter_date_operations(client: AsyncClient) -> None:
     assert 'Test User' in response.text
 
     # Test equals operation for created_at (datetime)
-    url = '/admin/user/list?created_at=2024-12-31T23:59:58%2B00:00&created_at_op=equals'  # noqa: E501
+    url = '/admin/user/list?created_at=2024-12-31T23:59:58%2B00:00&created_at_op=equals'
     response = await client.get(url)
     assert 'Admin User' not in response.text
     assert 'Regular User' in response.text
@@ -538,14 +538,14 @@ async def test_column_filter_naive_datetime_operations(
 ) -> None:
     """Test that ColumnFilter correctly handles naive datetime format."""
     # Test greater_than operation for created_at (datetime)
-    url = '/admin/user/list?created_at=2024-04-22+12:30:00&created_at_op=greater_than'  # noqa: E501
+    url = '/admin/user/list?created_at=2024-04-22+12:30:00&created_at_op=greater_than'
     response = await client.get(url)
     assert 'Admin User' in response.text
     assert 'Regular User' in response.text
     assert 'Test User' not in response.text
 
     # Test less_than operation for created_at (datetime)
-    url = '/admin/user/list?created_at=2024-04-22+12:30:00&created_at_op=less_than'  # noqa: E501
+    url = '/admin/user/list?created_at=2024-04-22+12:30:00&created_at_op=less_than'
     response = await client.get(url)
     assert 'Admin User' not in response.text
     assert 'Regular User' not in response.text
@@ -742,7 +742,7 @@ async def test_column_filter_uuid_operations(client: AsyncClient) -> None:
         assert 'UUID User' in response.text
 
         # Test UUID starts_with operation
-        url = f'/admin/user/list?user_uuid={partial_uuid}&user_uuid_op=starts_with'  # noqa: E501
+        url = f'/admin/user/list?user_uuid={partial_uuid}&user_uuid_op=starts_with'
         response = await client.get(url)
         assert response.status_code == 200
         assert 'UUID User' in response.text

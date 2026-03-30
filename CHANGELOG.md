@@ -7,6 +7,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Version 0.25.0 - 2026-03-30
+
+### Added
+
+- Toast to notify results for custom actions by @rusanpas in [PR #971](https://github.com/aminalaee/sqladmin/pull/971)
+- ModelView.search_auto_submit option for list search by @Airumian in [PR #1003](https://github.com/aminalaee/sqladmin/pull/1003)
+- Switch style for checkbox and fixed related bug by @maxim-f1 in [PR #975](https://github.com/aminalaee/sqladmin/pull/975)
+- Template hooks to all filters for customizable UIs (dropdowns, sliders, etc.) by @fd-oncodna in [PR #970](https://github.com/aminalaee/sqladmin/pull/970)
+- Extra blocks for templates allowing customization by @birddeveloper in [PR #952](https://github.com/aminalaee/sqladmin/pull/952)
+- Support filtering Date and Datetime fields with "less than" and "greater than" operations by @caarmen in [PR #1010](https://github.com/aminalaee/sqladmin/pull/1010)
+
+### Fixed
+
+- Handling SQLAlchemy UUID fields correctly by @mmzeynalli in [PR #14](https://github.com/mmzeynalli/sqladmin-ng/pull/14)
+- First exposed function is identity of view by @mmzeynalli in [PR #15](https://github.com/mmzeynalli/sqladmin-ng/pull/15)
+- Showing exceptions happened during delete in list page by @mmzeynalli in [PR #13](https://github.com/mmzeynalli/sqladmin-ng/pull/13)
+- Hiding "Save and continue editing" button in create page, if can_edit is `False` by @mmzeynalli in [PR #13](https://github.com/mmzeynalli/sqladmin-ng/pull/13)
+
+### Changes
+
+- Save values types as is if possible while JSON export
+ by @DenisDudnik in [PR #865](https://github.com/aminalaee/sqladmin/pull/865)
+
+- **Full Changelog**: [0.24.0...0.25.0](https://github.com/mmzeynalli/sqladmin/compare/0.24.0...0.25.0)
+
 ## Version 0.24.0 - 2026-03-29
 
 - Forked from sqladmin v0.23.0. This project continues development due to inactivity in the original repository.

@@ -1,0 +1,75 @@
+# git-cliff ~ configuration file
+# https://git-cliff.org/docs/configuration
+#
+# Configured to match the existing CHANGELOG.md style (Keep a Changelog).
+# Works fully offline — no GitHub token needed.
+# PR numbers are extracted from commit messages (e.g. "(#42)") via postprocessors.
+# Author names come from local git history.
+
+[changelog]
+header = """
+<!-- markdownlint-disable MD024 -->
+
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+"""
+
+body = """
+{% if version %}\
+    ## Version {{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+    ## Unreleased
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+    ### {{ group | striptags | trim | upper_first }}
+    {% for commit in commits %}
+        - {{ commit.message | split(pat="\n") | first | upper_first }} by @{{ commit.author.name }}\
+    {% endfor %}
+{% endfor -%}
+{% if version %}
+    - **Full Changelog**: [{{ previous.version | default(value="0.0.0") }}...{{ version }}](https://github.com/mmzeynalli/sqladmin/compare/{{ previous.version | default(value="0.0.0") }}...{{ version }})
+{% endif -%}
+"""
+
+trim = true
+render_always = true
+
+# Convert PR references "(#N)" in rendered output into markdown links
+postprocessors = [
+    { pattern = '\\(#(\\d+)\\)', replace = "([#${1}](https://github.com/mmzeynalli/sqladmin/pull/${1}))" },
+]
+
+[git]
+conventional_commits = true
+filter_unconventional = false
+require_conventional = false
+split_commits = false
+
+commit_preprocessors = []
+
+protect_breaking_commits = false
+
+# Only include merge commits; everything else is skipped.
+# Author names will be edited manually before release.
+commit_parsers = [
+    { message = "^Merge", group = "<!-- 0 -->Changes" },
+    { message = ".*", skip = true },
+]
+
+filter_commits = false
+fail_on_unmatched_commit = false
+
+link_parsers = [
+    { pattern = "#(\\d+)", href = "https://github.com/mmzeynalli/sqladmin/pull/$1" },
+]
+
+use_branch_tags = false
+topo_order = false
+topo_order_commits = true
+sort_commits = "oldest"
+recurse_submodules = false
